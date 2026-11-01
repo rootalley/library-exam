@@ -1,4 +1,8 @@
 import { GlobalNav } from './canvas.jsx'
+import { brands } from './themes.js'
+
+// only the gt theme for now
+const brand = brands.gt
 
 export default function App() {
   return (
@@ -10,7 +14,7 @@ export default function App() {
 
       <div style={{ display: 'flex', flex: 1 }}>
         {/* global navigation goes here */}
-        <GlobalNav />
+        <GlobalNav brand={brand} />
 
         {/* main panel goes here */}
         <main style={{ flex: 1 }} />
