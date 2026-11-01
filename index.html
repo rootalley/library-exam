@@ -1,96 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
     <title>Syllabus Page Prototype (CS 6750)</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-      }
-
-      /* orange bar across the top */
-      #alert-banner {
-        background: #d04a02;
-        color: #fff;
-        text-align: center;
-        padding: 3px 12px;
-        font-size: 14px;
-        font-weight: bold;
-      }
-
-      /* page is a column: banner on top, then nav + main panel side by side */
-      #page {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-      }
-      #below-banner {
-        display: flex;
-        flex: 1;
-      }
-      #global-nav {
-        width: 84px;
-        background: #857437; /* gt gold, copied from devtools on the live canvas page */
-      }
-      /* logo sits in a 85px tall block at the top of the nav */
-      #logo {
-        height: 85px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      #logo img {
-        width: 72px;
-        height: 72px;
-        object-fit: contain;
-      }
-      #nav-items {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
-      #nav-items a {
-        display: block;
-        padding: 7px 0;
-        text-align: center;
-        text-decoration: none;
-        color: #fff;
-        font-size: 14px;
-        line-height: 19.6px;
-      }
-      #main-panel {
-        flex: 1;
-      }
-    </style>
+    <style>html,body,#root{margin:0;height:100%}</style>
   </head>
   <body>
-    <div id="page">
-      <!-- top alert banner -->
-      <div id="alert-banner">Prototype for CS 6750 evaluation. Not real Canvas. Sample data only.</div>
-
-      <div id="below-banner">
-        <!-- global navigation goes here -->
-        <nav id="global-nav">
-          <div id="logo"><img src="assets/gt_logo.png" alt="" /></div>
-
-          <!-- nav items, the icons come later -->
-          <ul id="nav-items">
-            <li><a href="#">Account</a></li>
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Courses</a></li>
-            <li><a href="#">Groups</a></li>
-            <li><a href="#">Calendar</a></li>
-            <li><a href="#">Inbox</a></li>
-            <li><a href="#">History</a></li>
-            <li><a href="#">My Media</a></li>
-            <li><a href="#">Help</a></li>
-          </ul>
-        </nav>
-
-        <!-- main panel goes here -->
-        <main id="main-panel"></main>
-      </div>
-    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
