@@ -33,6 +33,18 @@
         width: 84px;
         background: #857437; /* gt gold, copied from devtools on the live canvas page */
       }
+      /* logo sits in a 85px tall block at the top of the nav */
+      #logo {
+        height: 85px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #logo img {
+        width: 72px;
+        height: 72px;
+        object-fit: contain;
+      }
       #main-panel {
         flex: 1;
       }
@@ -45,7 +57,9 @@
 
       <div id="below-banner">
         <!-- global navigation goes here -->
-        <nav id="global-nav"></nav>
+        <nav id="global-nav">
+          <div id="logo"><img src="assets/gt_logo.png" alt="" /></div>
+        </nav>
 
         <!-- main panel goes here -->
         <main id="main-panel"></main>
