@@ -18,10 +18,33 @@
         font-size: 14px;
         font-weight: bold;
       }
+
+      /* page is a column: banner on top, then nav + main panel side by side */
+      #page {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+      #below-banner {
+        display: flex;
+        flex: 1;
+      }
+      #main-panel {
+        flex: 1;
+      }
     </style>
   </head>
   <body>
-    <!-- top alert banner -->
-    <div id="alert-banner">Prototype for CS 6750 evaluation. Not real Canvas. Sample data only.</div>
+    <div id="page">
+      <!-- top alert banner -->
+      <div id="alert-banner">Prototype for CS 6750 evaluation. Not real Canvas. Sample data only.</div>
+
+      <div id="below-banner">
+        <!-- global navigation goes here -->
+
+        <!-- main panel goes here -->
+        <main id="main-panel"></main>
+      </div>
+    </div>
   </body>
 </html>
