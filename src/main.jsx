@@ -1,4 +1,6 @@
 import React from 'react'
+import '@fontsource/lato/400.css'
+import '@fontsource/lato/700.css'
 import { createRoot } from 'react-dom/client'
 import { InstUISettingsProvider, canvas } from '@instructure/ui'
 import App from './App.jsx'

@@ -13,7 +13,7 @@ export default function App() {
 
       <div style={{ display: 'flex', flex: 1 }}>
         {/* global navigation goes here */}
-        <nav style={{ width: 84, background: '#857437' }}>
+        <nav style={{ width: 84, background: '#857437', fontFamily: 'Lato, "Lato Extended", "Helvetica Neue", Helvetica, Arial, sans-serif' }}>
           <div style={{ height: 85, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <img src={gtLogo} alt="" style={{ width: 72, height: 72, objectFit: 'contain' }} />
           </div>
