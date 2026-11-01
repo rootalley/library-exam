@@ -1,4 +1,5 @@
 import gtLogo from './assets/gt_logo.png'
+import avatar from './assets/avatar-50.png'
 
 // brand colors copied from devtools on the live canvas page (css custom properties on the dashboard)
 export const brands = {
@@ -6,7 +7,7 @@ export const brands = {
     name: 'gt',
     logo: gtLogo,
     nav: [
-      { label: 'Account' },
+      { label: 'Account', avatar: true },
       { label: 'Dashboard' },
       { label: 'Courses' },
       { label: 'Groups' },
@@ -31,3 +32,5 @@ export const brands = {
     },
   },
 }
+
+export const images = { avatar }
