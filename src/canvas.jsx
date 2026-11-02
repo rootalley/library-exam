@@ -1,4 +1,5 @@
 // canvas chrome: global nav, course header, course nav
+import { IconArrowOpenEndSolid } from '@instructure/ui-icons'
 import { images } from './themes.js'
 
 const FONT = 'Lato, "Lato Extended", "Helvetica Neue", Helvetica, Arial, sans-serif'
@@ -41,5 +42,18 @@ export function GlobalNav({ brand, active = 'Courses' }) {
         })}
       </ul>
     </nav>
+  )
+}
+
+// the bar under the global nav: course code, an arrow, and the page name
+export function CourseHeader({ course, page, linkColor }) {
+  return (
+    <header style={{ height: 72, margin: '0 24px', borderBottom: '1px solid #c7cdd1', display: 'flex', alignItems: 'center', fontFamily: FONT, color: '#000' }}>
+      <span style={{ fontSize: 18, lineHeight: '27px', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <a href="#" onClick={(e) => e.preventDefault()} style={{ color: linkColor, textDecoration: 'none' }}>{course.code}</a>
+        <IconArrowOpenEndSolid style={{ fontSize: 12 }} />
+        <span>{page}</span>
+      </span>
+    </header>
   )
 }
