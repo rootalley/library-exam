@@ -2,13 +2,13 @@
 
 CS 6750 individual project. Goal: build the final prototype of the syllabus page editor so it looks like the real Canvas page and runs on fake data.
 
-I'll build it a little at a time and commit after every piece. Start with plain html, move to vite + react once the page gets bigger. GT theme first. DU and the plain canvas look come at the end.
+I'll build it a little at a time and commit after every piece. Started with plain html, moved to vite + react once the page got bigger. GT theme first. DU and the plain canvas look come at the end.
 
 ## page chrome
 - [x] orange alert banner across the top
 - [x] global nav on the left: width, gt gold, logo
-- [ ] nav icons, one at a time
-- [ ] highlight the active nav item
+- [x] nav icons, one at a time
+- [x] highlight the active nav item
 - [ ] course header with breadcrumb
 - [ ] course nav links (the hidden ones get an eye icon)
 
