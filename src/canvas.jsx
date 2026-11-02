@@ -10,7 +10,7 @@ function NavIcon({ item }) {
   if (item.img) return <img src={images[item.img]} alt="" style={{ display: 'block', margin: '5px auto' }} />
   if (item.svg) {
     // the svg strings from canvas go in as raw html, react docs on dangerouslySetInnerHTML: https://react.dev/reference/react-dom/components/common#dangerously-setting-the-inner-html
-    return <span style={{ display: 'block', width: 26, margin: '0 auto', fill: 'currentColor' }} dangerouslySetInnerHTML={{ __html: item.svg }} />
+    return <span className="ic-nav-svg" dangerouslySetInnerHTML={{ __html: item.svg }} />
   }
   return null
 }
@@ -18,6 +18,8 @@ function NavIcon({ item }) {
 export function GlobalNav({ brand }) {
   return (
     <nav style={{ width: 84, background: brand.vars['ic-brand-global-nav-bgd'], fontFamily: FONT }}>
+      {/* every icon gets the same 26px box so they line up */}
+      <style>{`.ic-nav-svg svg{width:26px;height:26px;display:block;margin:0 auto;fill:currentColor}`}</style>
       <div style={{ height: 85, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <img src={brand.logo} alt="" style={{ width: 72, height: 72, objectFit: 'contain' }} />
       </div>
