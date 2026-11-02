@@ -7,6 +7,7 @@ function NavIcon({ item }) {
   if (item.avatar) {
     return <img src={images.avatar} alt="" width="34" height="34" style={{ borderRadius: '50%', border: '2px solid #fff', boxSizing: 'content-box', display: 'block', margin: '0 auto' }} />
   }
+  if (item.img) return <img src={images[item.img]} alt="" style={{ display: 'block', margin: '5px auto' }} />
   if (item.svg) {
     // the svg strings from canvas go in as raw html, react docs on dangerouslySetInnerHTML: https://react.dev/reference/react-dom/components/common#dangerously-setting-the-inner-html
     return <span style={{ display: 'block', width: 26, margin: '0 auto', fill: 'currentColor' }} dangerouslySetInnerHTML={{ __html: item.svg }} />
