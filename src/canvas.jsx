@@ -1,5 +1,5 @@
 // canvas chrome: global nav, course header, course nav
-import { IconArrowOpenEndSolid } from '@instructure/ui-icons'
+import { IconArrowOpenEndSolid, IconHamburgerLine } from '@instructure/ui-icons'
 import { images } from './themes.js'
 
 const FONT = 'Lato, "Lato Extended", "Helvetica Neue", Helvetica, Arial, sans-serif'
@@ -49,6 +49,10 @@ export function GlobalNav({ brand, active = 'Courses' }) {
 export function CourseHeader({ course, page, linkColor }) {
   return (
     <header style={{ height: 72, margin: '0 24px', borderBottom: '1px solid #c7cdd1', display: 'flex', alignItems: 'center', fontFamily: FONT, color: '#000' }}>
+      {/* the menu button, it doesn't do anything in the prototype */}
+      <button type="button" aria-label="Toggle course navigation" style={{ width: 36, height: 30, margin: '0 12px 0 0', border: '1px solid transparent', borderRadius: 3, background: 'none', color: linkColor, fontSize: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+        <IconHamburgerLine />
+      </button>
       <span style={{ fontSize: 18, lineHeight: '27px', display: 'flex', alignItems: 'center', gap: 8 }}>
         <a href="#" onClick={(e) => e.preventDefault()} style={{ color: linkColor, textDecoration: 'none' }}>{course.code}</a>
         <IconArrowOpenEndSolid style={{ fontSize: 12 }} />
