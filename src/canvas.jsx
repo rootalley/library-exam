@@ -15,7 +15,11 @@ function NavIcon({ item }) {
   return null
 }
 
-export function GlobalNav({ brand }) {
+export function GlobalNav({ brand, active = 'Courses' }) {
+  const dark = brand.vars['ic-brand-font-color-dark']
+  // the active item is white with a colored icon and label, colors read from the live page
+  const activeText = brand.vars['proto-nav-active-text'] || dark
+  const activeIcon = brand.vars['proto-nav-active-icon'] || dark
   return (
     <nav style={{ width: 84, background: brand.vars['ic-brand-global-nav-bgd'], fontFamily: FONT }}>
       {/* every icon gets the same 26px box so they line up */}
@@ -24,14 +28,17 @@ export function GlobalNav({ brand }) {
         <img src={brand.logo} alt="" style={{ width: 72, height: 72, objectFit: 'contain' }} />
       </div>
       <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-        {brand.nav.map((item) => (
-          <li key={item.label}>
-            <a href="#" style={{ display: 'block', padding: '7px 0', textAlign: 'center', textDecoration: 'none', color: '#fff' }}>
-              <NavIcon item={item} />
-              <div style={{ fontSize: 14, lineHeight: '19.6px', marginTop: 3 }}>{item.label}</div>
-            </a>
-          </li>
-        ))}
+        {brand.nav.map((item) => {
+          const on = item.label === active
+          return (
+            <li key={item.label}>
+              <a href="#" style={{ display: 'block', padding: '7px 0', textAlign: 'center', textDecoration: 'none', color: on ? activeIcon : '#fff', background: on ? '#fff' : 'transparent' }}>
+                <NavIcon item={item} />
+                <div style={{ fontSize: 14, lineHeight: '19.6px', marginTop: 3, color: on ? activeText : '#fff' }}>{item.label}</div>
+              </a>
+            </li>
+          )
+        })}
       </ul>
     </nav>
   )
