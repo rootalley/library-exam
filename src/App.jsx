@@ -1,6 +1,6 @@
 import { Text } from '@instructure/ui'
 import { course } from './data.js'
-import { GlobalNav, CourseHeader } from './canvas.jsx'
+import { GlobalNav, CourseHeader, CourseNav } from './canvas.jsx'
 import { brands } from './themes.js'
 
 // only the gt theme for now
@@ -25,8 +25,11 @@ export default function App() {
         {/* everything to the right of the global nav */}
         <div style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>
           <CourseHeader course={course} page="Syllabus" linkColor={linkColor} />
-          {/* course nav goes here */}
-          {/* main panel goes here */}
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            {/* course nav goes here */}
+            <CourseNav linkColor={linkColor} />
+            {/* main panel goes here */}
+          </div>
         </div>
       </div>
     </div>
