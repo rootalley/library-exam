@@ -1,6 +1,8 @@
 import { Fragment } from 'react'
 import { IconArrowOpenEndSolid } from '@instructure/ui-icons'
+import { useSyllabus } from './state.jsx'
 import { Start } from './Start.jsx'
+import { Editor } from './Editor.jsx'
 
 const STEPS = [['start', 'Start'], ['edit', 'Edit and review'], ['preview', 'Preview and publish']]
 
@@ -26,11 +28,16 @@ function Steps({ current }) {
 }
 
 export function SyllabusScreen({ heading }) {
+  const { state } = useSyllabus()
+  // which step is highlighted in the breadcrumb
+  const current = { start: 0, edit: 1, preview: 2 }[state.phase]
+
   return (
     <div>
       {heading}
-      <Steps current={0} />
-      <Start />
+      <Steps current={current} />
+      {state.phase === 'start' && <Start />}
+      {state.phase === 'edit' && <Editor />}
     </div>
   )
 }
