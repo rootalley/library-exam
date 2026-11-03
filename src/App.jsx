@@ -2,6 +2,7 @@ import { View, Heading, Text } from '@instructure/ui'
 import { course } from './data.js'
 import { GlobalNav, CourseHeader, CourseNav } from './canvas.jsx'
 import { brands } from './themes.js'
+import { SyllabusProvider } from './syllabus/state.jsx'
 import { SyllabusScreen } from './syllabus/index.jsx'
 
 // only the gt theme for now
@@ -11,6 +12,7 @@ export default function App() {
   const linkColor = brand.vars['ic-link-color']
 
   return (
+    <SyllabusProvider>
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {/* the plain div had a serif font, the InstUI Text component brings the canvas font */}
       <div style={{ background: '#d04a02', color: '#fff', textAlign: 'center', padding: '3px 12px', flex: 'none' }}>
@@ -37,5 +39,6 @@ export default function App() {
         </div>
       </div>
     </div>
+    </SyllabusProvider>
   )
 }
