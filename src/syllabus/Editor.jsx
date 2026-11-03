@@ -8,6 +8,7 @@ const label = (t) => <ScreenReaderContent>{t}</ScreenReaderContent>
 
 // one block: the title, an Edit button, and the text
 function Block({ block }) {
+  const { dispatch } = useSyllabus()
   const [editing, setEditing] = useState(false)
 
   return (
@@ -21,7 +22,7 @@ function Block({ block }) {
         </Flex.Item>
       </Flex>
       {editing
-        ? <TextArea label={label(block.title)} height="6rem" defaultValue={block.text} />
+        ? <TextArea label={label(block.title)} height="6rem" value={block.text} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
         : <Text as="p">{block.text}</Text>}
     </View>
   )
