@@ -1,14 +1,17 @@
 import { createContext, useContext, useReducer } from 'react'
+import { importedBlocks } from './sample.js'
 
 const Ctx = createContext(null)
 export const useSyllabus = () => useContext(Ctx)
 
 // phase is which of the three steps we are on: start, edit or preview
-const initial = { phase: 'start', blocks: [] }
+const initial = { phase: 'start', blocks: [], source: null }
 
 // all the changes to the syllabus go through this reducer, docs: https://react.dev/reference/react/useReducer
 export function reducer(s, a) {
   switch (a.type) {
+    case 'import':
+      return { ...initial, phase: 'edit', source: a.source, blocks: importedBlocks() }
     case 'phase':
       return { ...s, phase: a.phase }
     default:
