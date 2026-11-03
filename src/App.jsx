@@ -2,6 +2,7 @@ import { View, Heading, Text } from '@instructure/ui'
 import { course } from './data.js'
 import { GlobalNav, CourseHeader, CourseNav } from './canvas.jsx'
 import { brands } from './themes.js'
+import { Start } from './syllabus/Start.jsx'
 
 // only the gt theme for now
 const brand = brands.gt
@@ -31,6 +32,7 @@ export default function App() {
             {/* main panel goes here */}
             <View as="main" display="block" padding="large medium" style={{ flex: 1, minWidth: 0, maxWidth: '72rem' }}>
               <Heading level="h1" margin="0 0 medium">Syllabus</Heading>
+              <Start />
             </View>
           </div>
         </div>
