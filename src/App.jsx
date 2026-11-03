@@ -27,7 +27,7 @@ export default function App() {
           <CourseHeader course={course} page="Syllabus" linkColor={linkColor} />
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             {/* course nav goes here */}
-            <CourseNav active="Syllabus" linkColor={linkColor} />
+            <CourseNav active="Syllabus" linkColor={linkColor} term={course.term} />
             {/* main panel goes here */}
           </div>
         </div>

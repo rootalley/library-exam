@@ -1,5 +1,5 @@
 // canvas chrome: global nav, course header, course nav
-import { IconArrowOpenEndSolid, IconHamburgerLine } from '@instructure/ui-icons'
+import { IconArrowOpenEndSolid, IconHamburgerLine, IconOffLine } from '@instructure/ui-icons'
 import { images } from './themes.js'
 
 const FONT = 'Lato, "Lato Extended", "Helvetica Neue", Helvetica, Arial, sans-serif'
@@ -63,20 +63,36 @@ export function CourseHeader({ course, page, linkColor }) {
 }
 
 // the links in the course menu on the left
-const courseLinks = ['Home', 'Announcements', 'Syllabus', 'Assignments', 'Discussions', 'Grades', 'People', 'Pages', 'Files', 'Quizzes', 'Modules', 'Settings']
+// hidden ones are links students can't see, they get the eye icon
+const courseLinks = [
+  { label: 'Home', hidden: false },
+  { label: 'Announcements', hidden: true },
+  { label: 'Syllabus', hidden: false },
+  { label: 'Assignments', hidden: true },
+  { label: 'Discussions', hidden: false },
+  { label: 'Grades', hidden: false },
+  { label: 'People', hidden: false },
+  { label: 'Pages', hidden: true },
+  { label: 'Files', hidden: true },
+  { label: 'Quizzes', hidden: true },
+  { label: 'Modules', hidden: true },
+  { label: 'Settings', hidden: false },
+]
 
-export function CourseNav({ active, linkColor }) {
+export function CourseNav({ active, linkColor, term }) {
   return (
     <nav aria-label="Courses Navigation Menu" style={{ width: 156, margin: '24px 0 0 24px', fontFamily: FONT }}>
+      {term && <div style={{ fontSize: 13, lineHeight: '18px', color: '#394b58', margin: '0 0 10px 6px' }}>{term}</div>}
       <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-        {courseLinks.map((label) => {
-          const on = label === active
+        {courseLinks.map((t) => {
+          const on = t.label === active
           return (
-            <li key={label}>
+            <li key={t.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <a href="#" onClick={(e) => e.preventDefault()}
-                style={{ display: 'block', padding: '8px 0 8px 4px', borderLeft: `2px solid ${on ? '#273540' : 'transparent'}`, fontSize: 16, lineHeight: '20.8px', fontWeight: on ? 700 : 400, color: on ? '#273540' : linkColor, textDecoration: 'none' }}>
-                {label}
+                style={{ flex: 1, padding: '8px 0 8px 4px', borderLeft: `2px solid ${on ? '#273540' : 'transparent'}`, fontSize: 16, lineHeight: '20.8px', fontWeight: on ? 700 : 400, color: on ? '#273540' : linkColor, textDecoration: 'none' }}>
+                {t.label}
               </a>
+              {t.hidden && <IconOffLine style={{ fontSize: 16, color: '#556572' }} title="Not visible to students" />}
             </li>
           )
         })}
