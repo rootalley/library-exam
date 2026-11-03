@@ -4,11 +4,12 @@ import { IconUploadLine, IconCoursesLine, IconAddLine } from '@instructure/ui-ic
 // one of the three boxes: icon, title, a sentence and a button
 function Option({ icon: Icon, title, text, action, primary }) {
   return (
-    <div style={{ width: '16rem', boxSizing: 'border-box', border: '1px solid #c7cdd1', borderRadius: 4, padding: 24 }}>
+    // the card is a column and the text takes the leftover space, so the three buttons line up at the bottom
+    <div style={{ display: 'flex', flexDirection: 'column', width: '16rem', boxSizing: 'border-box', border: '1px solid #c7cdd1', borderRadius: 4, padding: 24 }}>
       <Icon style={{ fontSize: 32 }} />
       <Heading level="h3" margin="small 0 x-small">{title}</Heading>
-      <div style={{ marginBottom: 24 }}><Text>{text}</Text></div>
-      <Button color={primary ? 'primary' : 'secondary'}>{action}</Button>
+      <div style={{ flex: 1, marginBottom: 24 }}><Text>{text}</Text></div>
+      <div><Button color={primary ? 'primary' : 'secondary'}>{action}</Button></div>
     </div>
   )
 }
@@ -16,7 +17,8 @@ function Option({ icon: Icon, title, text, action, primary }) {
 // the three ways to start a syllabus
 export function Start() {
   return (
-    <div style={{ display: 'flex', gap: 24 }}>
+    // align-items stretch makes the cards the same height, this MDN page on aligning flex items explains it: https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Flexible_box_layout/Aligning_items
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'stretch', gap: 24, margin: '0 0 24px' }}>
       {/* upload a file goes here */}
       <Option primary icon={IconUploadLine} title="Upload a file" text="We'll turn your Word or PDF file into editable blocks and flag anything that needs an update." action="Choose a file" />
       {/* copy previous syllabus goes here */}
