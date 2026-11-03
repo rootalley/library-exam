@@ -65,15 +65,21 @@ export function CourseHeader({ course, page, linkColor }) {
 // the links in the course menu on the left
 const courseLinks = ['Home', 'Announcements', 'Syllabus', 'Assignments', 'Discussions', 'Grades', 'People', 'Pages', 'Files', 'Quizzes', 'Modules', 'Settings']
 
-export function CourseNav({ linkColor }) {
+export function CourseNav({ active, linkColor }) {
   return (
     <nav aria-label="Courses Navigation Menu" style={{ width: 156, margin: '24px 0 0 24px', fontFamily: FONT }}>
       <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-        {courseLinks.map((label) => (
-          <li key={label}>
-            <a href="#" onClick={(e) => e.preventDefault()} style={{ display: 'block', padding: '8px 0 8px 4px', fontSize: 16, lineHeight: '20.8px', color: linkColor, textDecoration: 'none' }}>{label}</a>
-          </li>
-        ))}
+        {courseLinks.map((label) => {
+          const on = label === active
+          return (
+            <li key={label}>
+              <a href="#" onClick={(e) => e.preventDefault()}
+                style={{ display: 'block', padding: '8px 0 8px 4px', borderLeft: `2px solid ${on ? '#273540' : 'transparent'}`, fontSize: 16, lineHeight: '20.8px', fontWeight: on ? 700 : 400, color: on ? '#273540' : linkColor, textDecoration: 'none' }}>
+                {label}
+              </a>
+            </li>
+          )
+        })}
       </ul>
     </nav>
   )
