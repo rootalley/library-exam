@@ -9,13 +9,13 @@ I'll build it a little at a time and commit after every piece. Started with plai
 - [x] global nav on the left: width, gt gold, logo
 - [x] nav icons, one at a time
 - [x] highlight the active nav item
-- [ ] course header with breadcrumb
-- [ ] course nav links (the hidden ones get an eye icon)
+- [x] course header with breadcrumb
+- [x] course nav links (the hidden ones get an eye icon)
 
 ## front page
-- [ ] heading "Syllabus"
-- [ ] three boxes: upload a file, copy previous syllabus, start fresh
-- [ ] step breadcrumb (start, edit and review, preview and publish)
+- [x] heading "Syllabus"
+- [x] three boxes: upload a file, copy previous syllabus, start fresh
+- [x] step breadcrumb (start, edit and review, preview and publish)
 
 ## editor
 - [ ] list of blocks with edit, done, cancel, move up/down, remove, add a block
