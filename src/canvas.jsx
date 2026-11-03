@@ -22,7 +22,7 @@ export function GlobalNav({ brand, active = 'Courses' }) {
   const activeText = brand.vars['proto-nav-active-text'] || dark
   const activeIcon = brand.vars['proto-nav-active-icon'] || dark
   return (
-    <nav style={{ width: 84, background: brand.vars['ic-brand-global-nav-bgd'], fontFamily: FONT }}>
+    <nav style={{ width: 84, background: brand.vars['ic-brand-global-nav-bgd'], color: '#fff', fontFamily: FONT, flex: 'none', overflowY: 'auto' }}>
       {/* every icon gets the same 26px box so they line up */}
       <style>{`.ic-nav-svg svg{width:26px;height:26px;display:block;margin:0 auto;fill:currentColor}`}</style>
       <div style={{ height: 85, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -81,7 +81,7 @@ const courseLinks = [
 
 export function CourseNav({ active, linkColor, term }) {
   return (
-    <nav aria-label="Courses Navigation Menu" style={{ width: 156, margin: '24px 0 0 24px', fontFamily: FONT }}>
+    <nav aria-label="Courses Navigation Menu" style={{ width: 156, flex: 'none', margin: '24px 0 0 24px', fontFamily: FONT }}>
       {term && <div style={{ fontSize: 13, lineHeight: '18px', color: '#394b58', margin: '0 0 10px 6px' }}>{term}</div>}
       <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
         {courseLinks.map((t) => {
