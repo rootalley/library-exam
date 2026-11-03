@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { IconArrowOpenEndSolid } from '@instructure/ui-icons'
 import { Start } from './Start.jsx'
 
-const STEPS = [['start', 'Start'], ['edit', 'Edit and reveiw'], ['preview', 'Preview and publish']]
+const STEPS = [['start', 'Start'], ['edit', 'Edit and review'], ['preview', 'Preview and publish']]
 
 // numbered breadcrumbs across the top: Start > Edit and review > Preview and publish
 // colors are hard coded to the gt theme for now
