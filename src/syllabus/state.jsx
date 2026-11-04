@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer } from 'react'
-import { importedBlocks, blockTypes } from './sample.js'
+import { importedBlocks, starterBlocks, blockTypes } from './sample.js'
 
 const Ctx = createContext(null)
 export const useSyllabus = () => useContext(Ctx)
@@ -36,6 +36,8 @@ export function reducer(s, a) {
     }
     case 'restoreBlock':
       return updateBlock(s, a.block.id, () => a.block)
+    case 'blank':
+      return { ...initial, phase: 'edit', source: 'blank', blocks: starterBlocks() }
     case 'phase':
       return { ...s, phase: a.phase }
     default:

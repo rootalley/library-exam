@@ -7,6 +7,12 @@ export const blockTypes = [
   { kind: 'text', title: 'Free Text' },
 ]
 
+// a new instructor never sees an empty page, these are the blocks they start with
+export const starterBlocks = () => [
+  { id: 'catalog', kind: 'text', title: 'Course Description', text: '' },
+  { id: 'meetings', kind: 'text', title: 'Class Meetings', text: '' },
+]
+
 // what a word file or last term's canvas page would turn into: one block per heading
 export const importedBlocks = () => [
   { id: 'catalog', kind: 'text', title: 'Course Description', text: 'Introduces the principles of designing and evaluating user interfaces. Students learn how people perceive, think, and act, and apply that knowledge by building and testing interface prototypes. Three credit hours.' },

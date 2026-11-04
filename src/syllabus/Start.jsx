@@ -28,7 +28,7 @@ export function Start() {
         {/* copy previous syllabus goes here */}
         <Option icon={IconCoursesLine} title="Copy previous syllabus" text="We'll copy the syllabus from a past Canvas course, with dates moved to the new term." action="Choose a course" />
         {/* start fresh goes here */}
-        <Option icon={IconAddLine} title="Start fresh" text="We'll help you build your syllabus from scratch, one block at a time." action="Start fresh" />
+        <Option icon={IconAddLine} title="Start fresh" text="We'll help you build your syllabus from scratch, one block at a time." action="Start fresh" onClick={() => dispatch({ type: 'blank' })} />
       </div>
       <Text size="small" color="secondary">Prototype: the first two choices load a prepared sample syllabus (HCI 101, Spring 2026) after a short simulated wait.</Text>
     </div>
