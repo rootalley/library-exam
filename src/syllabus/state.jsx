@@ -26,6 +26,8 @@ export function reducer(s, a) {
       ;[blocks[i], blocks[j]] = [blocks[j], blocks[i]]
       return { ...s, blocks }
     }
+    case 'removeBlock':
+      return { ...s, blocks: s.blocks.filter((b) => b.id !== a.id) }
     case 'phase':
       return { ...s, phase: a.phase }
     default:

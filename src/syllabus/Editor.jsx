@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { View, Flex, Heading, Text, Button, IconButton, TextArea, ScreenReaderContent } from '@instructure/ui'
-import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconCheckMarkSolid } from '@instructure/ui-icons'
+import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconCheckMarkSolid } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
 
 // hidden label so the text box still has a name for screen readers
@@ -22,6 +22,7 @@ function Block({ block, index, count }) {
         <Flex.Item>
           <Button size="small" renderIcon={editing ? IconCheckMarkSolid : IconEditLine} margin="0 x-small" onClick={() => setEditing(!editing)}>{editing ? 'Done' : 'Edit'}</Button>
         </Flex.Item>
+        <Flex.Item><IconButton screenReaderLabel={`Remove ${block.title}`} renderIcon={IconTrashLine} size="small" withBackground={false} withBorder={false} onClick={() => dispatch({ type: 'removeBlock', id: block.id })} /></Flex.Item>
       </Flex>
       {editing
         ? <TextArea label={label(block.title)} height="6rem" value={block.text} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
