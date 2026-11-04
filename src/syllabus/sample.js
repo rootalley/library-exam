@@ -1,16 +1,20 @@
 // fake sample content for the prototype, no real names or data
 
+const CATALOG_HINT = "Paste the description exactly as it appears in the university's course catalog."
+const CATALOG_PROMPT = "Paste the exact course description from the university's catalog."
+const MEETINGS_PROMPT = 'When and where the class meets: days, times, and room or online meeting instructions.'
+
 // the kinds of block the instructor can add
 export const blockTypes = [
-  { kind: 'text', title: 'Course Description' },
-  { kind: 'text', title: 'Class Meetings' },
-  { kind: 'text', title: 'Free Text' },
+  { kind: 'text', title: 'Course Description', placeholder: CATALOG_PROMPT, hint: CATALOG_HINT },
+  { kind: 'text', title: 'Class Meetings', placeholder: MEETINGS_PROMPT },
+  { kind: 'text', title: 'Free Text', placeholder: 'Anything unique to your course.' },
 ]
 
 // a new instructor never sees an empty page, these are the blocks they start with
 export const starterBlocks = () => [
-  { id: 'catalog', kind: 'text', title: 'Course Description', text: '' },
-  { id: 'meetings', kind: 'text', title: 'Class Meetings', text: '' },
+  { id: 'catalog', kind: 'text', title: 'Course Description', text: '', placeholder: CATALOG_PROMPT, hint: CATALOG_HINT },
+  { id: 'meetings', kind: 'text', title: 'Class Meetings', text: '', placeholder: MEETINGS_PROMPT },
 ]
 
 // what a word file or last term's canvas page would turn into: one block per heading

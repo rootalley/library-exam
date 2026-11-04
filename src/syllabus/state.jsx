@@ -30,7 +30,7 @@ export function reducer(s, a) {
       return { ...s, blocks: s.blocks.filter((b) => b.id !== a.id) }
     case 'addBlock': {
       const t = blockTypes[a.index]
-      const b = { id: `n${s.nextId}`, kind: t.kind, title: t.title }
+      const b = { id: `n${s.nextId}`, kind: t.kind, title: t.title, placeholder: t.placeholder, hint: t.hint }
       if (t.kind === 'text') b.text = ''
       return { ...s, blocks: [...s.blocks, b], nextId: s.nextId + 1 }
     }

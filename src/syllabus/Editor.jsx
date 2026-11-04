@@ -31,8 +31,8 @@ function Block({ block, index, count }) {
         <Flex.Item><IconButton screenReaderLabel={`Remove ${block.title}`} renderIcon={IconTrashLine} size="small" withBackground={false} withBorder={false} onClick={() => dispatch({ type: 'removeBlock', id: block.id })} /></Flex.Item>
       </Flex>
       {editing
-        ? <TextArea label={label(block.title)} height="6rem" value={block.text} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
-        : <Text as="p">{block.text}</Text>}
+        ? <TextArea label={label(block.title)} placeholder={block.placeholder} height="6rem" value={block.text} messages={block.hint ? [{ text: block.hint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
+        : <Text as="p">{block.text ? block.text : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>}
     </View>
   )
 }
