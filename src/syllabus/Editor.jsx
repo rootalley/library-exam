@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { View, Flex, Heading, Text, Button, IconButton, TextArea, ScreenReaderContent } from '@instructure/ui'
 import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAddLine, IconCheckMarkSolid } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
@@ -11,6 +11,10 @@ const label = (t) => <ScreenReaderContent>{t}</ScreenReaderContent>
 function Block({ block, index, count }) {
   const { dispatch } = useSyllabus()
   const [editing, setEditing] = useState(false)
+  // the block as it was when editing started, so Cancel can put it back. useRef docs: https://react.dev/reference/react/useRef
+  const snapshot = useRef(block)
+  const startEditing = () => { snapshot.current = block; setEditing(true) }
+  const cancelEditing = () => { dispatch({ type: 'restoreBlock', block: snapshot.current }); setEditing(false) }
 
   return (
     <View as="section" display="block" borderWidth="small" borderRadius="medium" padding="small medium" margin="0 0 small" background="primary">
@@ -20,8 +24,9 @@ function Block({ block, index, count }) {
         </Flex.Item>
         <Flex.Item><IconButton screenReaderLabel={`Move ${block.title} up`} renderIcon={IconArrowUpLine} size="small" withBackground={false} withBorder={false} interaction={index === 0 ? 'disabled' : 'enabled'} onClick={() => dispatch({ type: 'move', id: block.id, dir: -1 })} /></Flex.Item>
         <Flex.Item><IconButton screenReaderLabel={`Move ${block.title} down`} renderIcon={IconArrowDownLine} size="small" withBackground={false} withBorder={false} interaction={index === count - 1 ? 'disabled' : 'enabled'} onClick={() => dispatch({ type: 'move', id: block.id, dir: 1 })} /></Flex.Item>
+        {editing && <Flex.Item><Button size="small" margin="0 0 0 x-small" onClick={cancelEditing}>Cancel</Button></Flex.Item>}
         <Flex.Item>
-          <Button size="small" renderIcon={editing ? IconCheckMarkSolid : IconEditLine} margin="0 x-small" onClick={() => setEditing(!editing)}>{editing ? 'Done' : 'Edit'}</Button>
+          <Button size="small" renderIcon={editing ? IconCheckMarkSolid : IconEditLine} margin="0 x-small" onClick={() => (editing ? setEditing(false) : startEditing())}>{editing ? 'Done' : 'Edit'}</Button>
         </Flex.Item>
         <Flex.Item><IconButton screenReaderLabel={`Remove ${block.title}`} renderIcon={IconTrashLine} size="small" withBackground={false} withBorder={false} onClick={() => dispatch({ type: 'removeBlock', id: block.id })} /></Flex.Item>
       </Flex>

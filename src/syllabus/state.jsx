@@ -34,6 +34,8 @@ export function reducer(s, a) {
       if (t.kind === 'text') b.text = ''
       return { ...s, blocks: [...s.blocks, b], nextId: s.nextId + 1 }
     }
+    case 'restoreBlock':
+      return updateBlock(s, a.block.id, () => a.block)
     case 'phase':
       return { ...s, phase: a.phase }
     default:
