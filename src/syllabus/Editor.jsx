@@ -1,13 +1,13 @@
 import { useState } from 'react'
-import { View, Flex, Heading, Text, Button, TextArea, ScreenReaderContent } from '@instructure/ui'
-import { IconEditLine, IconCheckMarkSolid } from '@instructure/ui-icons'
+import { View, Flex, Heading, Text, Button, IconButton, TextArea, ScreenReaderContent } from '@instructure/ui'
+import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconCheckMarkSolid } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
 
 // hidden label so the text box still has a name for screen readers
 const label = (t) => <ScreenReaderContent>{t}</ScreenReaderContent>
 
 // one block: the title, an Edit button, and the text
-function Block({ block }) {
+function Block({ block, index, count }) {
   const { dispatch } = useSyllabus()
   const [editing, setEditing] = useState(false)
 
@@ -17,6 +17,8 @@ function Block({ block }) {
         <Flex.Item shouldGrow>
           <Heading level="h3" as="h3">{block.title}</Heading>
         </Flex.Item>
+        <Flex.Item><IconButton screenReaderLabel={`Move ${block.title} up`} renderIcon={IconArrowUpLine} size="small" withBackground={false} withBorder={false} interaction={index === 0 ? 'disabled' : 'enabled'} onClick={() => dispatch({ type: 'move', id: block.id, dir: -1 })} /></Flex.Item>
+        <Flex.Item><IconButton screenReaderLabel={`Move ${block.title} down`} renderIcon={IconArrowDownLine} size="small" withBackground={false} withBorder={false} interaction={index === count - 1 ? 'disabled' : 'enabled'} onClick={() => dispatch({ type: 'move', id: block.id, dir: 1 })} /></Flex.Item>
         <Flex.Item>
           <Button size="small" renderIcon={editing ? IconCheckMarkSolid : IconEditLine} margin="0 x-small" onClick={() => setEditing(!editing)}>{editing ? 'Done' : 'Edit'}</Button>
         </Flex.Item>
@@ -34,7 +36,7 @@ export function Editor() {
 
   return (
     <div>
-      {state.blocks.map((b) => <Block key={b.id} block={b} />)}
+      {state.blocks.map((b, i) => <Block key={b.id} block={b} index={i} count={state.blocks.length} />)}
     </div>
   )
 }

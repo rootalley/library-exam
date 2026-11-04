@@ -17,6 +17,15 @@ export function reducer(s, a) {
       return { ...initial, phase: 'edit', source: a.source, blocks: importedBlocks() }
     case 'editText':
       return updateBlock(s, a.id, (b) => ({ ...b, text: a.text }))
+    case 'move': {
+      // swap the block with its neighbor, a.dir is -1 for up and 1 for down
+      const i = s.blocks.findIndex((b) => b.id === a.id)
+      const j = i + a.dir
+      if (j < 0 || j >= s.blocks.length) return s
+      const blocks = [...s.blocks]
+      ;[blocks[i], blocks[j]] = [blocks[j], blocks[i]]
+      return { ...s, blocks }
+    }
     case 'phase':
       return { ...s, phase: a.phase }
     default:
