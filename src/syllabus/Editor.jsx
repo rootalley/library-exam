@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { View, Flex, Heading, Text, Button, IconButton, TextArea, ScreenReaderContent } from '@instructure/ui'
-import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconCheckMarkSolid } from '@instructure/ui-icons'
+import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAddLine, IconCheckMarkSolid } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
+import { blockTypes } from './sample.js'
 
 // hidden label so the text box still has a name for screen readers
 const label = (t) => <ScreenReaderContent>{t}</ScreenReaderContent>
@@ -33,11 +34,19 @@ function Block({ block, index, count }) {
 
 // the blocks of the syllabus
 export function Editor() {
-  const { state } = useSyllabus()
+  const { state, dispatch } = useSyllabus()
 
   return (
     <div>
       {state.blocks.map((b, i) => <Block key={b.id} block={b} index={i} count={state.blocks.length} />)}
+      <View as="div" margin="medium 0 0">
+        <Text weight="bold">Add a block</Text>
+        <View as="div" margin="x-small 0 0">
+          {blockTypes.map((t, i) => (
+            <Button key={t.title} size="small" margin="0 x-small x-small 0" renderIcon={IconAddLine} onClick={() => dispatch({ type: 'addBlock', index: i })}>{t.title}</Button>
+          ))}
+        </View>
+      </View>
     </div>
   )
 }

@@ -1,11 +1,11 @@
 import { createContext, useContext, useReducer } from 'react'
-import { importedBlocks } from './sample.js'
+import { importedBlocks, blockTypes } from './sample.js'
 
 const Ctx = createContext(null)
 export const useSyllabus = () => useContext(Ctx)
 
 // phase is which of the three steps we are on: start, edit or preview
-const initial = { phase: 'start', blocks: [], source: null }
+const initial = { phase: 'start', blocks: [], source: null, nextId: 1 }
 
 // changes one block, leaves the others alone
 const updateBlock = (s, id, fn) => ({ ...s, blocks: s.blocks.map((b) => (b.id === id ? fn(b) : b)) })
@@ -28,6 +28,12 @@ export function reducer(s, a) {
     }
     case 'removeBlock':
       return { ...s, blocks: s.blocks.filter((b) => b.id !== a.id) }
+    case 'addBlock': {
+      const t = blockTypes[a.index]
+      const b = { id: `n${s.nextId}`, kind: t.kind, title: t.title }
+      if (t.kind === 'text') b.text = ''
+      return { ...s, blocks: [...s.blocks, b], nextId: s.nextId + 1 }
+    }
     case 'phase':
       return { ...s, phase: a.phase }
     default:

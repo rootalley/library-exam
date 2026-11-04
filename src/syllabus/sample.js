@@ -1,5 +1,12 @@
 // fake sample content for the prototype, no real names or data
 
+// the kinds of block the instructor can add
+export const blockTypes = [
+  { kind: 'text', title: 'Course Description' },
+  { kind: 'text', title: 'Class Meetings' },
+  { kind: 'text', title: 'Free Text' },
+]
+
 // what a word file or last term's canvas page would turn into: one block per heading
 export const importedBlocks = () => [
   { id: 'catalog', kind: 'text', title: 'Course Description', text: 'Introduces the principles of designing and evaluating user interfaces. Students learn how people perceive, think, and act, and apply that knowledge by building and testing interface prototypes. Three credit hours.' },
