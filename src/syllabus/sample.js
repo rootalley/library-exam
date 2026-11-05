@@ -50,7 +50,7 @@ export const importedBlocks = () => [
   { id: 'objectives', kind: 'objectives', title: 'Learning Objectives', lead: LEAD_IN,
     items: ['Explain the core principles of human-computer interaction.', 'Evaluate an interface with real users.', 'Design and test a prototype of a new interface.'] },
   // canvas builds this block from the course's assignments, so nobody types it in
-  { id: 'coursesummary', kind: 'coursesummary', title: 'Course Summary', rows: summaryRows2026() },
+  { id: 'coursesummary', kind: 'coursesummary', title: 'Course Summary', enabled: true, rows: summaryRows2026() },
   { id: 'grading', kind: 'grading', title: 'Grading Scheme', rows: course.grading.map((g) => ({ ...g })),
     policy: 'Late homework loses 10% per day for up to three days. Letter grades follow the university scale.' },
   { id: 'meetings', kind: 'text', title: 'Class Meetings', text: 'This is the Spring 2026 section. It meets Tuesdays and Thursdays in Science Hall Room 214.' },

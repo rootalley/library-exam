@@ -61,6 +61,8 @@ export function reducer(s, a) {
       return updateBlock(s, a.id, (b) => ({ ...b, rows: b.rows.filter((_, i) => i !== a.index) }))
     case 'editPolicy':
       return updateBlock(s, a.id, (b) => ({ ...b, policy: a.value }))
+    case 'toggleBlock':
+      return updateBlock(s, a.id, (x) => ({ ...x, enabled: !x.enabled }))
     case 'phase':
       return { ...s, phase: a.phase }
     default:

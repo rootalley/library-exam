@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { View, Flex, Heading, Text, Button, IconButton, TextInput, TextArea, Pill, ScreenReaderContent } from '@instructure/ui'
+import { View, Flex, Heading, Text, Button, IconButton, TextInput, TextArea, Pill, Checkbox, ScreenReaderContent } from '@instructure/ui'
 import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAddLine, IconCheckMarkSolid } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
 import { ContactCard, contactEmpty, profilePhoto } from './Contact.jsx'
@@ -100,6 +100,7 @@ function Block({ block, index, count }) {
   const { dispatch } = useSyllabus()
   const [editing, setEditing] = useState(false)
   // the block as it was when editing started, so Cancel can put it back. useRef docs: https://react.dev/reference/react/useRef
+  const summary = block.kind === 'coursesummary'
   const snapshot = useRef(block)
   const startEditing = () => { snapshot.current = block; setEditing(true) }
   const cancelEditing = () => { dispatch({ type: 'restoreBlock', block: snapshot.current }); setEditing(false) }
@@ -112,16 +113,27 @@ function Block({ block, index, count }) {
         </Flex.Item>
         <Flex.Item><IconButton screenReaderLabel={`Move ${block.title} up`} renderIcon={IconArrowUpLine} size="small" withBackground={false} withBorder={false} interaction={index === 0 ? 'disabled' : 'enabled'} onClick={() => dispatch({ type: 'move', id: block.id, dir: -1 })} /></Flex.Item>
         <Flex.Item><IconButton screenReaderLabel={`Move ${block.title} down`} renderIcon={IconArrowDownLine} size="small" withBackground={false} withBorder={false} interaction={index === count - 1 ? 'disabled' : 'enabled'} onClick={() => dispatch({ type: 'move', id: block.id, dir: 1 })} /></Flex.Item>
-        {editing && <Flex.Item><Button size="small" margin="0 0 0 x-small" onClick={cancelEditing}>Cancel</Button></Flex.Item>}
-        <Flex.Item>
-          <Button size="small" renderIcon={editing ? IconCheckMarkSolid : IconEditLine} margin="0 x-small" onClick={() => (editing ? setEditing(false) : startEditing())}>{editing ? 'Done' : 'Edit'}</Button>
-        </Flex.Item>
-        <Flex.Item><IconButton screenReaderLabel={`Remove ${block.title}`} renderIcon={IconTrashLine} size="small" withBackground={false} withBorder={false} onClick={() => dispatch({ type: 'removeBlock', id: block.id })} /></Flex.Item>
+        {summary && <Flex.Item><Checkbox label="Show to students" checked={block.enabled} onChange={() => dispatch({ type: 'toggleBlock', id: block.id })} margin="0 small" /></Flex.Item>}
+        {!summary && editing && <Flex.Item><Button size="small" margin="0 0 0 x-small" onClick={cancelEditing}>Cancel</Button></Flex.Item>}
+        {!summary && (
+          <Flex.Item>
+            <Button size="small" renderIcon={editing ? IconCheckMarkSolid : IconEditLine} margin="0 x-small" onClick={() => (editing ? setEditing(false) : startEditing())}>{editing ? 'Done' : 'Edit'}</Button>
+          </Flex.Item>
+        )}
+        {!summary && <Flex.Item><IconButton screenReaderLabel={`Remove ${block.title}`} renderIcon={IconTrashLine} size="small" withBackground={false} withBorder={false} onClick={() => dispatch({ type: 'removeBlock', id: block.id })} /></Flex.Item>}
       </Flex>
       {block.kind === 'text' && (editing
         ? <TextArea label={label(block.title)} placeholder={block.placeholder} height="6rem" value={block.text} messages={block.hint ? [{ text: block.hint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
         : <Text as="p">{block.text ? block.text : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>)}
-      {block.kind === 'coursesummary' && <CourseSummaryTable rows={block.rows} />}
+      {summary && (
+        <div>
+          <div style={{ opacity: block.enabled ? 1 : 0.45 }}><CourseSummaryTable rows={block.rows} /></div>
+          {!block.enabled && <View as="div" margin="x-small 0 0"><Text size="small" color="secondary">Turned off: students won't see this block.</Text></View>}
+          <View as="div" margin="small 0 0" padding="x-small small" background="secondary" borderRadius="small">
+            <Text size="small"><Text size="small" weight="bold">Instructor tip: </Text>The contents of this block are generated from the course's assignments and their due dates, so there is nothing to type.</Text>
+          </View>
+        </div>
+      )}
       {block.kind === 'grading' && <Rows block={block} editing={editing} dispatch={dispatch} />}
       {block.kind === 'objectives' && <Objectives block={block} editing={editing} dispatch={dispatch} />}
       {block.kind === 'contact' && (editing
