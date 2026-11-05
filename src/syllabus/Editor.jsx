@@ -41,15 +41,19 @@ function ContactForm({ block, dispatch }) {
 // learning objectives: a lead-in sentence, a list, and a tip for the instructor
 function Objectives({ block }) {
   return (
-    <div>
-      <Text as="p">{block.lead}</Text>
-      <ul style={{ margin: '0 0 0 1.25rem', padding: 0 }}>
-        {block.items.filter((x) => x.trim()).map((x, i) => <li key={i}>{x}</li>)}
-      </ul>
-      <View as="div" margin="small 0 0" padding="x-small small" background="secondary" borderRadius="small">
-        <Text size="small"><Text size="small" weight="bold">Instructor tip: </Text>Learning objectives should specify observable student abilities or behaviors.</Text>
-      </View>
-    </div>
+    <Flex gap="medium" alignItems="start">
+      <Flex.Item shouldGrow shouldShrink>
+        <Text as="p">{block.lead}</Text>
+        <ul style={{ margin: '0 0 0 1.25rem', padding: 0 }}>
+          {block.items.filter((x) => x.trim()).map((x, i) => <li key={i}>{x}</li>)}
+        </ul>
+      </Flex.Item>
+      <Flex.Item size="14rem">
+        <View as="div" padding="x-small small" background="secondary" borderRadius="small">
+          <Text size="small"><Text size="small" weight="bold">Instructor tip: </Text>Learning objectives should specify observable student abilities or behaviors.</Text>
+        </View>
+      </Flex.Item>
+    </Flex>
   )
 }
 
