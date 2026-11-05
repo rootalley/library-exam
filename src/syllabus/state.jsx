@@ -38,6 +38,10 @@ export function reducer(s, a) {
       return updateBlock(s, a.block.id, () => a.block)
     case 'blank':
       return { ...initial, phase: 'edit', source: 'blank', blocks: starterBlocks() }
+    case 'editField':
+      return updateBlock(s, a.id, (b) => ({ ...b, fields: { ...b.fields, [a.field]: a.value } }))
+    case 'setPhoto':
+      return updateBlock(s, a.id, (b) => ({ ...b, photo: a.value }))
     case 'phase':
       return { ...s, phase: a.phase }
     default:

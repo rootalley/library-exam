@@ -2,6 +2,8 @@
 import { Fragment } from 'react'
 import photo from '../assets/profile_placeholder.svg'
 
+export const profilePhoto = photo
+
 export const CONTACT_ROWS = [['email', 'Email'], ['phone', 'Phone'], ['office', 'Office'], ['officeHours', 'Office hours'], ['assistants', 'Teaching assistants']]
 
 export function ContactCard({ block }) {

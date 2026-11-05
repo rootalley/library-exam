@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { View, Flex, Heading, Text, Button, IconButton, TextInput, TextArea, ScreenReaderContent } from '@instructure/ui'
 import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAddLine, IconCheckMarkSolid } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
-import { ContactCard } from './Contact.jsx'
+import { ContactCard, profilePhoto } from './Contact.jsx'
 import { blockTypes } from './sample.js'
 
 // hidden label so the text box still has a name for screen readers
@@ -11,12 +11,28 @@ const label = (t) => <ScreenReaderContent>{t}</ScreenReaderContent>
 const FIELDS = [['name', 'Name'], ['title', 'Title'], ['department', 'Department'], ['email', 'Email'], ['phone', 'Phone'], ['office', 'Office'], ['officeHours', 'Office hours'], ['assistants', 'Teaching assistants']]
 
 // the instructor info form, like an address book entry
-function ContactForm({ block }) {
+function ContactForm({ block, dispatch }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 16px' }}>
-      {FIELDS.map(([k, name]) => (
-        <TextInput key={k} renderLabel={name} value={block.fields[k]} onChange={() => {}} />
-      ))}
+    <div>
+      <Flex gap="medium" alignItems="start" margin="0 0 small">
+        <Flex.Item>
+          <div style={{ width: 96, height: 96, borderRadius: '50%', overflow: 'hidden', background: '#eceef0' }}>
+            {block.photo && <img src={profilePhoto} alt="" width={96} height={96} style={{ display: 'block' }} />}
+          </div>
+        </Flex.Item>
+        <Flex.Item>
+          <View as="div" margin="x-small 0"><Text weight="bold">Photo</Text></View>
+          {block.photo
+            ? <Button size="small" onClick={() => dispatch({ type: 'setPhoto', id: block.id, value: false })}>Remove photo</Button>
+            : <Button size="small" onClick={() => dispatch({ type: 'setPhoto', id: block.id, value: true })}>Add a photo</Button>}
+          <View as="div" margin="x-small 0 0"><Text size="small" color="secondary">Prototype: adds a sample photo. It is shown as a circle.</Text></View>
+        </Flex.Item>
+      </Flex>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 16px' }}>
+        {FIELDS.map(([k, name]) => (
+          <TextInput key={k} renderLabel={name} value={block.fields[k]} onChange={(e, v) => dispatch({ type: 'editField', id: block.id, field: k, value: v })} />
+        ))}
+      </div>
     </div>
   )
 }
@@ -47,7 +63,7 @@ function Block({ block, index, count }) {
       {block.kind === 'text' && (editing
         ? <TextArea label={label(block.title)} placeholder={block.placeholder} height="6rem" value={block.text} messages={block.hint ? [{ text: block.hint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
         : <Text as="p">{block.text ? block.text : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>)}
-      {block.kind === 'contact' && (editing ? <ContactForm block={block} /> : <ContactCard block={block} />)}
+      {block.kind === 'contact' && (editing ? <ContactForm block={block} dispatch={dispatch} /> : <ContactCard block={block} />)}
     </View>
   )
 }
