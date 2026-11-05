@@ -4,6 +4,7 @@ import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAd
 import { useSyllabus, activeFlags } from './state.jsx'
 import { ContactCard, contactEmpty, profilePhoto } from './Contact.jsx'
 import { CourseSummaryTable } from './CourseSummary.jsx'
+import { Marked } from './Marked.jsx'
 import { blockTypes, TERM_OLD, TERM_NEW } from './sample.js'
 
 // hidden label so the text box still has a name for screen readers
@@ -96,7 +97,7 @@ function Objectives({ block, editing, dispatch }) {
 }
 
 // one block: the title, an Edit button, and the text
-function Block({ block, index, count }) {
+function Block({ block, index, count, flags }) {
   const { dispatch } = useSyllabus()
   const [editing, setEditing] = useState(false)
   // the block as it was when editing started, so Cancel can put it back. useRef docs: https://react.dev/reference/react/useRef
@@ -124,7 +125,7 @@ function Block({ block, index, count }) {
       </Flex>
       {block.kind === 'text' && (editing
         ? <TextArea label={label(block.title)} placeholder={block.placeholder} height="6rem" value={block.text} messages={block.hint ? [{ text: block.hint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
-        : <Text as="p">{block.text ? block.text : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>)}
+        : <Text as="p">{block.text ? <Marked text={block.text} flags={flags.filter((f) => f.blockId === block.id)} /> : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>)}
       {summary && (
         <div>
           <div style={{ opacity: block.enabled ? 1 : 0.45 }}><CourseSummaryTable rows={block.rows} /></div>
@@ -214,11 +215,12 @@ function Panel({ state, dispatch }) {
 // the blocks of the syllabus
 export function Editor() {
   const { state, dispatch } = useSyllabus()
+  const flags = activeFlags(state)
 
   return (
     <Flex alignItems="start" gap="medium">
       <Flex.Item shouldGrow shouldShrink>
-        {state.blocks.map((b, i) => <Block key={b.id} block={b} index={i} count={state.blocks.length} />)}
+        {state.blocks.map((b, i) => <Block key={b.id} block={b} index={i} count={state.blocks.length} flags={flags} />)}
         <View as="div" margin="medium 0 0">
           <Text weight="bold">Add a block</Text>
           <View as="div" margin="x-small 0 0">
