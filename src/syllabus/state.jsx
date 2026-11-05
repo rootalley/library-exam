@@ -50,6 +50,14 @@ export function reducer(s, a) {
       return updateBlock(s, a.id, (b) => ({ ...b, items: [...b.items, ''] }))
     case 'removeItem':
       return updateBlock(s, a.id, (b) => ({ ...b, items: b.items.filter((_, i) => i !== a.index) }))
+    case 'editRow':
+      return updateBlock(s, a.id, (b) => ({ ...b, rows: b.rows.map((r, i) => (i === a.index ? { ...r, [a.field]: a.value } : r)) }))
+    case 'addRow':
+      return updateBlock(s, a.id, (b) => ({ ...b, rows: [...b.rows, { category: '', weight: '' }] }))
+    case 'removeRow':
+      return updateBlock(s, a.id, (b) => ({ ...b, rows: b.rows.filter((_, i) => i !== a.index) }))
+    case 'editPolicy':
+      return updateBlock(s, a.id, (b) => ({ ...b, policy: a.value }))
     case 'phase':
       return { ...s, phase: a.phase }
     default:

@@ -39,17 +39,26 @@ function ContactForm({ block, dispatch }) {
 }
 
 // grading scheme: weighted categories plus a free text grading policy
-function Rows({ block }) {
+function Rows({ block, editing, dispatch }) {
   const total = block.rows.reduce((n, r) => n + (Number(r.weight) || 0), 0)
   return (
     <div>
-      {block.rows.map((r, i) => (
+      {block.rows.map((r, i) => editing ? (
+        <Flex key={i} gap="small" margin="0 0 x-small" alignItems="center">
+          <Flex.Item shouldGrow><TextInput renderLabel={label('Category')} placeholder="Category" value={r.category} onChange={(e, v) => dispatch({ type: 'editRow', id: block.id, index: i, field: 'category', value: v })} /></Flex.Item>
+          <Flex.Item size="6rem"><TextInput renderLabel={label('Weight')} placeholder="Weight %" value={String(r.weight)} onChange={(e, v) => dispatch({ type: 'editRow', id: block.id, index: i, field: 'weight', value: v })} /></Flex.Item>
+          <Flex.Item><IconButton screenReaderLabel="Remove row" renderIcon={IconTrashLine} size="small" withBackground={false} withBorder={false} onClick={() => dispatch({ type: 'removeRow', id: block.id, index: i })} /></Flex.Item>
+        </Flex>
+      ) : (
         <View as="div" key={i}><Text>{`${r.category || '(untitled)'}: ${r.weight || 0}%`}</Text></View>
       ))}
+      {editing && <Button size="small" renderIcon={IconAddLine} onClick={() => dispatch({ type: 'addRow', id: block.id })}>Add a row</Button>}
       <View as="div" margin="x-small 0 small">
         <Pill color={total === 100 ? 'success' : 'warning'}>{total === 100 ? 'Total: 100%' : `Total: ${total}% (should be 100%)`}</Pill>
       </View>
-      {block.policy ? <Text as="p">{block.policy}</Text> : <Text color="secondary" fontStyle="italic">No grading policy yet. Select Edit to explain how grades are calculated.</Text>}
+      {editing
+        ? <TextArea label="Grading policy" height="5rem" placeholder="Explain your grading policy." value={block.policy || ''} messages={block.policyHint ? [{ text: block.policyHint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editPolicy', id: block.id, value: e.target.value })} />
+        : block.policy ? <Text as="p">{block.policy}</Text> : <Text color="secondary" fontStyle="italic">No grading policy yet. Select Edit to explain how grades are calculated.</Text>}
     </div>
   )
 }
@@ -111,7 +120,7 @@ function Block({ block, index, count }) {
       {block.kind === 'text' && (editing
         ? <TextArea label={label(block.title)} placeholder={block.placeholder} height="6rem" value={block.text} messages={block.hint ? [{ text: block.hint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
         : <Text as="p">{block.text ? block.text : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>)}
-      {block.kind === 'grading' && <Rows block={block} />}
+      {block.kind === 'grading' && <Rows block={block} editing={editing} dispatch={dispatch} />}
       {block.kind === 'objectives' && <Objectives block={block} editing={editing} dispatch={dispatch} />}
       {block.kind === 'contact' && (editing
         ? <ContactForm block={block} dispatch={dispatch} />
