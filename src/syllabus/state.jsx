@@ -5,7 +5,7 @@ const Ctx = createContext(null)
 export const useSyllabus = () => useContext(Ctx)
 
 // phase is which of the three steps we are on: start, edit or preview
-const initial = { phase: 'start', blocks: [], source: null, datesShifted: false, dateLog: [], nextId: 1 }
+const initial = { phase: 'start', blocks: [], source: null, datesShifted: false, dateLog: [], log: [], nextId: 1 }
 
 // changes one block, leaves the others alone
 const updateBlock = (s, id, fn) => ({ ...s, blocks: s.blocks.map((b) => (b.id === id ? fn(b) : b)) })
@@ -14,7 +14,8 @@ const updateBlock = (s, id, fn) => ({ ...s, blocks: s.blocks.map((b) => (b.id ==
 export function reducer(s, a) {
   switch (a.type) {
     case 'import':
-      return { ...initial, phase: 'edit', source: a.source, blocks: importedBlocks() }
+      return { ...initial, phase: 'edit', source: a.source, blocks: importedBlocks(),
+        log: [a.source === 'word' ? `Imported my_syllabus.docx into ${importedBlocks().length} blocks` : `Copied a previous syllabus into ${importedBlocks().length} blocks`] }
     case 'shiftDates': {
       // every course summary row moves to the new term, the old and new dates go in dateLog
       const dateLog = []
@@ -24,7 +25,7 @@ export function reducer(s, a) {
         b.rows.forEach((r, i) => dateLog.push(`${r.date} \u2192 ${rows[i].date}`))
         return { ...b, rows }
       })
-      return { ...s, blocks, datesShifted: true, dateLog }
+      return { ...s, blocks, datesShifted: true, dateLog, log: [...s.log, `Moved all dates to ${TERM_NEW}`] }
     }
     case 'editText':
       return updateBlock(s, a.id, (b) => ({ ...b, text: a.text }))
@@ -35,10 +36,12 @@ export function reducer(s, a) {
       if (j < 0 || j >= s.blocks.length) return s
       const blocks = [...s.blocks]
       ;[blocks[i], blocks[j]] = [blocks[j], blocks[i]]
-      return { ...s, blocks }
+      return { ...s, blocks, log: [...s.log, `Moved ${blocks[j].title} ${a.dir < 0 ? 'up' : 'down'}`] }
     }
-    case 'removeBlock':
-      return { ...s, blocks: s.blocks.filter((b) => b.id !== a.id) }
+    case 'removeBlock': {
+      const b = s.blocks.find((x) => x.id === a.id)
+      return { ...s, blocks: s.blocks.filter((x) => x.id !== a.id), log: [...s.log, `Removed ${b.title}`] }
+    }
     case 'addBlock': {
       const t = blockTypes[a.index]
       const b = { id: `n${s.nextId}`, kind: t.kind, title: t.title, placeholder: t.placeholder, hint: t.hint }
@@ -47,12 +50,12 @@ export function reducer(s, a) {
       if (t.kind === 'coursesummary') { b.enabled = true; b.rows = shiftRows(summaryRows2026()) }
       if (t.kind === 'text') b.text = ''
       if (t.kind === 'grading') { b.rows = [{ category: '', weight: '' }]; b.policy = ''; b.policyHint = GRADING_POLICY_HINT }
-      return { ...s, blocks: [...s.blocks, b], nextId: s.nextId + 1 }
+      return { ...s, blocks: [...s.blocks, b], nextId: s.nextId + 1, log: [...s.log, `Added ${t.title}`] }
     }
     case 'restoreBlock':
       return updateBlock(s, a.block.id, () => a.block)
     case 'blank':
-      return { ...initial, phase: 'edit', source: 'blank', blocks: starterBlocks() }
+      return { ...initial, phase: 'edit', source: 'blank', blocks: starterBlocks(), log: [`Started with ${starterBlocks().length} blank blocks`] }
     case 'editField':
       return updateBlock(s, a.id, (b) => ({ ...b, fields: { ...b.fields, [a.field]: a.value } }))
     case 'setPhoto':
@@ -73,8 +76,10 @@ export function reducer(s, a) {
       return updateBlock(s, a.id, (b) => ({ ...b, rows: b.rows.filter((_, i) => i !== a.index) }))
     case 'editPolicy':
       return updateBlock(s, a.id, (b) => ({ ...b, policy: a.value }))
-    case 'toggleBlock':
-      return updateBlock(s, a.id, (x) => ({ ...x, enabled: !x.enabled }))
+    case 'toggleBlock': {
+      const b = s.blocks.find((x) => x.id === a.id)
+      return { ...updateBlock(s, a.id, (x) => ({ ...x, enabled: !x.enabled })), log: [...s.log, `${b.enabled ? 'Turned off' : 'Turned on'} ${b.title}`] }
+    }
     case 'phase':
       return { ...s, phase: a.phase }
     default:

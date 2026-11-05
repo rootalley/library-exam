@@ -184,6 +184,12 @@ function Panel({ state, dispatch }) {
           )}
         </View>
       )}
+      {state.log.length > 1 && (
+        <View as="div" margin="0 0 medium">
+          <Text weight="bold">Changes so far</Text>
+          {state.log.slice(-6).map((l, i) => <View as="div" key={i}><Text size="small">{l}</Text></View>)}
+        </View>
+      )}
       <Button color="primary" display="block" onClick={() => dispatch({ type: 'phase', phase: 'preview' })}>Preview</Button>
     </View>
   )
