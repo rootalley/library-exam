@@ -5,8 +5,21 @@ const CATALOG_HINT = "Paste the description exactly as it appears in the univers
 const CATALOG_PROMPT = "Paste the exact course description from the university's catalog."
 const MEETINGS_PROMPT = 'When and where the class meets: days, times, and room or online meeting instructions.'
 
+export const TERM_OLD = 'Spring 2026'
+export const TERM_NEW = 'Spring 2027'
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+// moves a date forward 52 weeks so a tuesday stays a tuesday in the new term
+// Date.UTC keeps the time zone out of it, MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC
+export function shiftDate(str) {
+  const m = str.match(/^([A-Za-z]{3}) (\d{1,2}), (\d{4})$/)
+  if (!m) return str
+  const d = new Date(Date.UTC(+m[3], MONTHS.indexOf(m[1]), +m[2]) + 364 * 86400000)
+  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`
+}
+
 // what canvas would list in the course summary for last term: assignments, discussions and quizzes with due dates, all on tuesdays
-const summaryRows2026 = () => [
+export const summaryRows2026 = () => [
   { type: 'discussion', name: 'Discussion: Introduce Yourself', date: 'Jan 20, 2026', time: '11:59pm' },
   { type: 'assignment', name: 'Homework 1', date: 'Jan 27, 2026', time: '11:59pm' },
   { type: 'assignment', name: 'Homework 2', date: 'Feb 10, 2026', time: '11:59pm' },
@@ -17,6 +30,7 @@ const summaryRows2026 = () => [
   { type: 'assignment', name: 'Homework 4', date: 'Apr 14, 2026', time: '11:59pm' },
   { type: 'quiz', name: 'Final exam', date: 'May 5, 2026', time: '5:30pm' },
 ]
+export const shiftRows = (rows) => rows.map((r) => ({ ...r, date: shiftDate(r.date) }))
 
 const GRADING_HINT = 'Explain how grades are calculated and assigned, such as late work and the letter-grade scale.'
 const LEAD_IN = 'Upon successful completion of the course, you will be able to:'
@@ -28,6 +42,7 @@ export const blockTypes = [
   { kind: 'text', title: 'Course Description', placeholder: CATALOG_PROMPT, hint: CATALOG_HINT },
   { kind: 'contact', title: 'Instructor Info' },
   { kind: 'objectives', title: 'Learning Objectives' },
+  { kind: 'coursesummary', title: 'Course Summary' },
   { kind: 'grading', title: 'Grading Scheme' },
   { kind: 'text', title: 'Class Meetings', placeholder: MEETINGS_PROMPT },
   { kind: 'text', title: 'Free Text', placeholder: 'Anything unique to your course.' },
@@ -38,6 +53,7 @@ export const starterBlocks = () => [
   { id: 'catalog', kind: 'text', title: 'Course Description', text: '', placeholder: CATALOG_PROMPT, hint: CATALOG_HINT },
   { id: 'instructor', kind: 'contact', title: 'Instructor Info', photo: false, fields: emptyContact() },
   { id: 'objectives', kind: 'objectives', title: 'Learning Objectives', lead: LEAD_IN, items: ['', '', ''] },
+  { id: 'coursesummary', kind: 'coursesummary', title: 'Course Summary', enabled: true, rows: shiftRows(summaryRows2026()) },
   { id: 'grading', kind: 'grading', title: 'Grading Scheme', rows: [{ category: '', weight: '' }, { category: '', weight: '' }, { category: '', weight: '' }], policy: '', policyHint: GRADING_HINT },
   { id: 'meetings', kind: 'text', title: 'Class Meetings', text: '', placeholder: MEETINGS_PROMPT },
 ]
@@ -53,7 +69,7 @@ export const importedBlocks = () => [
   { id: 'coursesummary', kind: 'coursesummary', title: 'Course Summary', enabled: true, rows: summaryRows2026() },
   { id: 'grading', kind: 'grading', title: 'Grading Scheme', rows: course.grading.map((g) => ({ ...g })),
     policy: 'Late homework loses 10% per day for up to three days. Letter grades follow the university scale.' },
-  { id: 'meetings', kind: 'text', title: 'Class Meetings', text: 'This is the Spring 2026 section. It meets Tuesdays and Thursdays in Science Hall Room 214.' },
+  { id: 'meetings', kind: 'text', title: 'Class Meetings', text: `This is the ${TERM_OLD} section. It meets Tuesdays and Thursdays in Science Hall Room 214.` },
 ]
 
 export const GRADING_POLICY_HINT = GRADING_HINT

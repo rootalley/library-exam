@@ -1,11 +1,11 @@
 import { createContext, useContext, useReducer } from 'react'
-import { importedBlocks, starterBlocks, blockTypes, emptyContact, LEAD_IN, GRADING_POLICY_HINT } from './sample.js'
+import { importedBlocks, starterBlocks, blockTypes, emptyContact, shiftRows, summaryRows2026, TERM_NEW, LEAD_IN, GRADING_POLICY_HINT } from './sample.js'
 
 const Ctx = createContext(null)
 export const useSyllabus = () => useContext(Ctx)
 
 // phase is which of the three steps we are on: start, edit or preview
-const initial = { phase: 'start', blocks: [], source: null, nextId: 1 }
+const initial = { phase: 'start', blocks: [], source: null, datesShifted: false, dateLog: [], nextId: 1 }
 
 // changes one block, leaves the others alone
 const updateBlock = (s, id, fn) => ({ ...s, blocks: s.blocks.map((b) => (b.id === id ? fn(b) : b)) })
@@ -15,6 +15,17 @@ export function reducer(s, a) {
   switch (a.type) {
     case 'import':
       return { ...initial, phase: 'edit', source: a.source, blocks: importedBlocks() }
+    case 'shiftDates': {
+      // every course summary row moves to the new term, the old and new dates go in dateLog
+      const dateLog = []
+      const blocks = s.blocks.map((b) => {
+        if (b.kind !== 'coursesummary') return b
+        const rows = shiftRows(b.rows)
+        b.rows.forEach((r, i) => dateLog.push(`${r.date} \u2192 ${rows[i].date}`))
+        return { ...b, rows }
+      })
+      return { ...s, blocks, datesShifted: true, dateLog }
+    }
     case 'editText':
       return updateBlock(s, a.id, (b) => ({ ...b, text: a.text }))
     case 'move': {
@@ -33,6 +44,7 @@ export function reducer(s, a) {
       const b = { id: `n${s.nextId}`, kind: t.kind, title: t.title, placeholder: t.placeholder, hint: t.hint }
       if (t.kind === 'contact') { b.fields = emptyContact(); b.photo = false }
       if (t.kind === 'objectives') { b.lead = LEAD_IN; b.items = [''] }
+      if (t.kind === 'coursesummary') { b.enabled = true; b.rows = shiftRows(summaryRows2026()) }
       if (t.kind === 'text') b.text = ''
       if (t.kind === 'grading') { b.rows = [{ category: '', weight: '' }]; b.policy = ''; b.policyHint = GRADING_POLICY_HINT }
       return { ...s, blocks: [...s.blocks, b], nextId: s.nextId + 1 }
