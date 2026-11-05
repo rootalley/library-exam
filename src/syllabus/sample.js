@@ -1,4 +1,5 @@
 // fake sample content for the prototype, no real names or data
+import { course } from '../data.js'
 
 const CATALOG_HINT = "Paste the description exactly as it appears in the university's course catalog."
 const CATALOG_PROMPT = "Paste the exact course description from the university's catalog."
@@ -26,5 +27,7 @@ export const importedBlocks = () => [
     fields: { name: 'Prof. Casey Rivera', title: 'Associate Professor', department: 'Department of Computer Science', email: 'casey.rivera@example.edu', phone: '(555) 010-0142', office: 'Science Hall 310', officeHours: 'Wednesdays, 2 to 4 pm', assistants: 'Jordan Lee' } },
   { id: 'objectives', kind: 'objectives', title: 'Learning Objectives', lead: LEAD_IN,
     items: ['Explain the core principles of human-computer interaction.', 'Evaluate an interface with real users.', 'Design and test a prototype of a new interface.'] },
+  { id: 'grading', kind: 'grading', title: 'Grading Scheme', rows: course.grading.map((g) => ({ ...g })),
+    policy: 'Late homework loses 10% per day for up to three days. Letter grades follow the university scale.' },
   { id: 'meetings', kind: 'text', title: 'Class Meetings', text: 'This is the Spring 2026 section. It meets Tuesdays and Thursdays in Science Hall Room 214.' },
 ]

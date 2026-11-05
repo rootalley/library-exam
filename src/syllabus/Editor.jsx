@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { View, Flex, Heading, Text, Button, IconButton, TextInput, TextArea, ScreenReaderContent } from '@instructure/ui'
+import { View, Flex, Heading, Text, Button, IconButton, TextInput, TextArea, Pill, ScreenReaderContent } from '@instructure/ui'
 import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAddLine, IconCheckMarkSolid } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
 import { ContactCard, contactEmpty, profilePhoto } from './Contact.jsx'
@@ -34,6 +34,22 @@ function ContactForm({ block, dispatch }) {
         ))}
       </div>
       <View as="div" margin="small 0 0"><Text size="small" color="secondary">Anything you leave blank is not shown to students.</Text></View>
+    </div>
+  )
+}
+
+// grading scheme: weighted categories plus a free text grading policy
+function Rows({ block }) {
+  const total = block.rows.reduce((n, r) => n + (Number(r.weight) || 0), 0)
+  return (
+    <div>
+      {block.rows.map((r, i) => (
+        <View as="div" key={i}><Text>{`${r.category || '(untitled)'}: ${r.weight || 0}%`}</Text></View>
+      ))}
+      <View as="div" margin="x-small 0 small">
+        <Pill color={total === 100 ? 'success' : 'warning'}>{total === 100 ? 'Total: 100%' : `Total: ${total}% (should be 100%)`}</Pill>
+      </View>
+      {block.policy ? <Text as="p">{block.policy}</Text> : <Text color="secondary" fontStyle="italic">No grading policy yet. Select Edit to explain how grades are calculated.</Text>}
     </div>
   )
 }
@@ -95,6 +111,7 @@ function Block({ block, index, count }) {
       {block.kind === 'text' && (editing
         ? <TextArea label={label(block.title)} placeholder={block.placeholder} height="6rem" value={block.text} messages={block.hint ? [{ text: block.hint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
         : <Text as="p">{block.text ? block.text : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>)}
+      {block.kind === 'grading' && <Rows block={block} />}
       {block.kind === 'objectives' && <Objectives block={block} editing={editing} dispatch={dispatch} />}
       {block.kind === 'contact' && (editing
         ? <ContactForm block={block} dispatch={dispatch} />
