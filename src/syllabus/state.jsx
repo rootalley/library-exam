@@ -1,11 +1,11 @@
 import { createContext, useContext, useReducer } from 'react'
-import { importedBlocks, starterBlocks, blockTypes, emptyContact, shiftRows, summaryRows2026, TERM_NEW, LEAD_IN, GRADING_POLICY_HINT } from './sample.js'
+import { importedBlocks, importedFlags, starterBlocks, blockTypes, emptyContact, shiftRows, summaryRows2026, TERM_NEW, LEAD_IN, GRADING_POLICY_HINT } from './sample.js'
 
 const Ctx = createContext(null)
 export const useSyllabus = () => useContext(Ctx)
 
 // phase is which of the three steps we are on: start, edit or preview
-const initial = { phase: 'start', blocks: [], source: null, datesShifted: false, dateLog: [], log: [], nextId: 1 }
+const initial = { phase: 'start', blocks: [], source: null, flags: [], datesShifted: false, dateLog: [], log: [], nextId: 1 }
 
 // changes one block, leaves the others alone
 const updateBlock = (s, id, fn) => ({ ...s, blocks: s.blocks.map((b) => (b.id === id ? fn(b) : b)) })
@@ -14,7 +14,7 @@ const updateBlock = (s, id, fn) => ({ ...s, blocks: s.blocks.map((b) => (b.id ==
 export function reducer(s, a) {
   switch (a.type) {
     case 'import':
-      return { ...initial, phase: 'edit', source: a.source, blocks: importedBlocks(),
+      return { ...initial, phase: 'edit', source: a.source, blocks: importedBlocks(), flags: importedFlags(),
         log: [a.source === 'word' ? `Imported my_syllabus.docx into ${importedBlocks().length} blocks` : `Copied a previous syllabus into ${importedBlocks().length} blocks`] }
     case 'shiftDates': {
       // every course summary row moves to the new term, the old and new dates go in dateLog
@@ -26,6 +26,16 @@ export function reducer(s, a) {
         return { ...b, rows }
       })
       return { ...s, blocks, datesShifted: true, dateLog, log: [...s.log, `Moved all dates to ${TERM_NEW}`] }
+    }
+    case 'resolveFlag': {
+      const f = s.flags.find((x) => x.id === a.id)
+      let st = { ...s, flags: s.flags.map((x) => (x.id === a.id ? { ...x, resolved: true } : x)) }
+      if (a.replace && f.replacement) {
+        // swap the flagged text for the replacement inside its block
+        st = updateBlock(st, f.blockId, (b) => ({ ...b, text: b.text.split(f.text).join(f.replacement) }))
+        return { ...st, log: [...s.log, `Changed "${f.text}" to "${f.replacement}"`] }
+      }
+      return { ...st, log: [...s.log, `Kept "${f.text}"`] }
     }
     case 'editText':
       return updateBlock(s, a.id, (b) => ({ ...b, text: a.text }))
@@ -91,3 +101,9 @@ export function SyllabusProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initial)
   return <Ctx.Provider value={{ state, dispatch }}>{children}</Ctx.Provider>
 }
+
+// all the text a block holds, so a flag can find its detail whatever kind of block it is
+export const blockText = (b) => (b.kind === 'text' ? b.text : b.kind === 'contact' ? Object.values(b.fields).join('\n') : b.kind === 'objectives' ? [b.lead, ...b.items].join('\n') : '')
+
+// flags that are still open and whose text is still in the syllabus
+export const activeFlags = (s) => s.flags.filter((f) => !f.resolved && s.blocks.some((b) => b.id === f.blockId && blockText(b).includes(f.text)))

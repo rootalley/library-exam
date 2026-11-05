@@ -32,6 +32,13 @@ export const summaryRows2026 = () => [
 ]
 export const shiftRows = (rows) => rows.map((r) => ({ ...r, date: shiftDate(r.date) }))
 
+// details from the old file that the instructor should look at again
+export const importedFlags = () => [
+  { id: 'f-term', blockId: 'meetings', text: TERM_OLD, note: 'Term from last year', replacement: TERM_NEW, resolved: false },
+  { id: 'f-room', blockId: 'meetings', text: 'Science Hall Room 214', note: 'The room may have changed', resolved: false },
+  { id: 'f-ta', blockId: 'instructor', text: 'Jordan Lee', note: "Last term's teaching assistant", resolved: false },
+]
+
 const GRADING_HINT = 'Explain how grades are calculated and assigned, such as late work and the letter-grade scale.'
 const LEAD_IN = 'Upon successful completion of the course, you will be able to:'
 

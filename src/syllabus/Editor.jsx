@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { View, Flex, Heading, Text, Button, IconButton, TextInput, TextArea, Pill, Checkbox, ScreenReaderContent } from '@instructure/ui'
 import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAddLine, IconCheckMarkSolid, IconWarningLine } from '@instructure/ui-icons'
-import { useSyllabus } from './state.jsx'
+import { useSyllabus, activeFlags } from './state.jsx'
 import { ContactCard, contactEmpty, profilePhoto } from './Contact.jsx'
 import { CourseSummaryTable } from './CourseSummary.jsx'
 import { blockTypes, TERM_OLD, TERM_NEW } from './sample.js'
@@ -159,6 +159,7 @@ function Check({ ok, children }) {
 function Panel({ state, dispatch }) {
   // a blank syllabus has nothing old to bring forward
   const imported = state.source !== 'blank'
+  const flags = activeFlags(state)
 
   return (
     <View as="aside" display="block" borderWidth="small" borderRadius="medium" padding="medium" background="secondary" aria-label="Review">
@@ -182,6 +183,21 @@ function Panel({ state, dispatch }) {
               {state.dateLog.map((d) => <View as="div" key={d}><Text size="small">{d}</Text></View>)}
             </div>
           )}
+        </View>
+      )}
+      {imported && (
+        <View as="div" margin="0 0 medium">
+          <Text weight="bold">Details to check ({flags.length})</Text>
+          {flags.length === 0 && <Check ok>Every flagged detail has been reviewed.</Check>}
+          {flags.map((f) => (
+            <View as="div" key={f.id} margin="x-small 0" padding="x-small" background="primary" borderWidth="small" borderRadius="small">
+              <mark style={{ background: '#fff176', padding: '0 2px', wordBreak: 'break-all' }}>{f.text}</mark>
+              <View as="div" margin="xx-small 0"><Text size="small">{f.note}</Text></View>
+              <Button size="small" margin="0 x-small 0 0" onClick={() => dispatch({ type: 'resolveFlag', id: f.id })}>Looks right</Button>
+              {f.replacement && <Button size="small" onClick={() => dispatch({ type: 'resolveFlag', id: f.id, replace: true })}>Use {f.replacement}</Button>}
+            </View>
+          ))}
+          <View as="div" margin="x-small 0 0"><Text size="small" color="secondary">Flagged details are highlighted in yellow. Every block can be edited, not only the flagged ones.</Text></View>
         </View>
       )}
       {state.log.length > 1 && (
