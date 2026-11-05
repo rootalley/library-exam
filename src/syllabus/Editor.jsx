@@ -38,6 +38,21 @@ function ContactForm({ block, dispatch }) {
   )
 }
 
+// learning objectives: a lead-in sentence, a list, and a tip for the instructor
+function Objectives({ block }) {
+  return (
+    <div>
+      <Text as="p">{block.lead}</Text>
+      <ul style={{ margin: '0 0 0 1.25rem', padding: 0 }}>
+        {block.items.filter((x) => x.trim()).map((x, i) => <li key={i}>{x}</li>)}
+      </ul>
+      <View as="div" margin="small 0 0" padding="x-small small" background="secondary" borderRadius="small">
+        <Text size="small"><Text size="small" weight="bold">Instructor tip: </Text>Learning objectives should specify observable student abilities or behaviors.</Text>
+      </View>
+    </div>
+  )
+}
+
 // one block: the title, an Edit button, and the text
 function Block({ block, index, count }) {
   const { dispatch } = useSyllabus()
@@ -64,6 +79,7 @@ function Block({ block, index, count }) {
       {block.kind === 'text' && (editing
         ? <TextArea label={label(block.title)} placeholder={block.placeholder} height="6rem" value={block.text} messages={block.hint ? [{ text: block.hint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
         : <Text as="p">{block.text ? block.text : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>)}
+      {block.kind === 'objectives' && <Objectives block={block} />}
       {block.kind === 'contact' && (editing
         ? <ContactForm block={block} dispatch={dispatch} />
         : contactEmpty(block)
