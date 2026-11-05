@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { View, Flex, Heading, Text, Button, IconButton, TextArea, ScreenReaderContent } from '@instructure/ui'
+import { View, Flex, Heading, Text, Button, IconButton, TextInput, TextArea, ScreenReaderContent } from '@instructure/ui'
 import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAddLine, IconCheckMarkSolid } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
 import { ContactCard } from './Contact.jsx'
@@ -7,6 +7,19 @@ import { blockTypes } from './sample.js'
 
 // hidden label so the text box still has a name for screen readers
 const label = (t) => <ScreenReaderContent>{t}</ScreenReaderContent>
+
+const FIELDS = [['name', 'Name'], ['title', 'Title'], ['department', 'Department'], ['email', 'Email'], ['phone', 'Phone'], ['office', 'Office'], ['officeHours', 'Office hours'], ['assistants', 'Teaching assistants']]
+
+// the instructor info form, like an address book entry
+function ContactForm({ block }) {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 16px' }}>
+      {FIELDS.map(([k, name]) => (
+        <TextInput key={k} renderLabel={name} value={block.fields[k]} onChange={() => {}} />
+      ))}
+    </div>
+  )
+}
 
 // one block: the title, an Edit button, and the text
 function Block({ block, index, count }) {
@@ -34,7 +47,7 @@ function Block({ block, index, count }) {
       {block.kind === 'text' && (editing
         ? <TextArea label={label(block.title)} placeholder={block.placeholder} height="6rem" value={block.text} messages={block.hint ? [{ text: block.hint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
         : <Text as="p">{block.text ? block.text : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>)}
-      {block.kind === 'contact' && <ContactCard block={block} />}
+      {block.kind === 'contact' && (editing ? <ContactForm block={block} /> : <ContactCard block={block} />)}
     </View>
   )
 }
