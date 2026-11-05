@@ -141,7 +141,7 @@ function Block({ block, index, count, flags }) {
         ? <ContactForm block={block} dispatch={dispatch} />
         : contactEmpty(block)
           ? <Text color="secondary" fontStyle="italic">Name, title, email, office hours, and a photo, like an address-book entry.</Text>
-          : <ContactCard block={block} />)}
+          : <ContactCard block={block} flags={flags.filter((f) => f.blockId === block.id)} />)}
     </View>
   )
 }
