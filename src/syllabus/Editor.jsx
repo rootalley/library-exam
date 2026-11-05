@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { View, Flex, Heading, Text, Button, IconButton, TextArea, ScreenReaderContent } from '@instructure/ui'
 import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAddLine, IconCheckMarkSolid } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
+import { ContactCard } from './Contact.jsx'
 import { blockTypes } from './sample.js'
 
 // hidden label so the text box still has a name for screen readers
@@ -30,9 +31,10 @@ function Block({ block, index, count }) {
         </Flex.Item>
         <Flex.Item><IconButton screenReaderLabel={`Remove ${block.title}`} renderIcon={IconTrashLine} size="small" withBackground={false} withBorder={false} onClick={() => dispatch({ type: 'removeBlock', id: block.id })} /></Flex.Item>
       </Flex>
-      {editing
+      {block.kind === 'text' && (editing
         ? <TextArea label={label(block.title)} placeholder={block.placeholder} height="6rem" value={block.text} messages={block.hint ? [{ text: block.hint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
-        : <Text as="p">{block.text ? block.text : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>}
+        : <Text as="p">{block.text ? block.text : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>)}
+      {block.kind === 'contact' && <ContactCard block={block} />}
     </View>
   )
 }

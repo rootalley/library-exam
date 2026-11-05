@@ -20,5 +20,7 @@ export const starterBlocks = () => [
 // what a word file or last term's canvas page would turn into: one block per heading
 export const importedBlocks = () => [
   { id: 'catalog', kind: 'text', title: 'Course Description', text: 'Introduces the principles of designing and evaluating user interfaces. Students learn how people perceive, think, and act, and apply that knowledge by building and testing interface prototypes. Three credit hours.' },
+  { id: 'instructor', kind: 'contact', title: 'Instructor Info', photo: true,
+    fields: { name: 'Prof. Casey Rivera', title: 'Associate Professor', department: 'Department of Computer Science', email: 'casey.rivera@example.edu', phone: '(555) 010-0142', office: 'Science Hall 310', officeHours: 'Wednesdays, 2 to 4 pm', assistants: 'Jordan Lee' } },
   { id: 'meetings', kind: 'text', title: 'Class Meetings', text: 'This is the Spring 2026 section. It meets Tuesdays and Thursdays in Science Hall Room 214.' },
 ]
