@@ -39,13 +39,29 @@ function ContactForm({ block, dispatch }) {
 }
 
 // learning objectives: a lead-in sentence, a list, and a tip for the instructor
-function Objectives({ block }) {
+function Objectives({ block, editing, dispatch }) {
   return (
     <div>
-      <Text as="p">{block.lead}</Text>
-      <ul style={{ margin: '0 0 0 1.25rem', padding: 0 }}>
-        {block.items.filter((x) => x.trim()).map((x, i) => <li key={i}>{x}</li>)}
-      </ul>
+      {editing ? (
+        <div>
+          <TextArea label="Lead-in text" height="3.5rem" value={block.lead} onChange={(e) => dispatch({ type: 'editLead', id: block.id, value: e.target.value })} />
+          <View as="div" margin="small 0 x-small"><Text weight="bold">Objectives</Text></View>
+          {block.items.map((it, i) => (
+            <Flex key={i} gap="small" margin="0 0 x-small" alignItems="center">
+              <Flex.Item shouldGrow><TextInput renderLabel={label(`Objective ${i + 1}`)} placeholder={`Objective ${i + 1}`} value={it} onChange={(e, v) => dispatch({ type: 'editItem', id: block.id, index: i, value: v })} /></Flex.Item>
+              <Flex.Item><IconButton screenReaderLabel={`Remove objective ${i + 1}`} renderIcon={IconTrashLine} size="small" withBackground={false} withBorder={false} onClick={() => dispatch({ type: 'removeItem', id: block.id, index: i })} /></Flex.Item>
+            </Flex>
+          ))}
+          <Button size="small" renderIcon={IconAddLine} onClick={() => dispatch({ type: 'addItem', id: block.id })}>Add a line</Button>
+        </div>
+      ) : (
+        <div>
+          <Text as="p">{block.lead}</Text>
+          <ul style={{ margin: '0 0 0 1.25rem', padding: 0 }}>
+            {block.items.filter((x) => x.trim()).map((x, i) => <li key={i}>{x}</li>)}
+          </ul>
+        </div>
+      )}
       <View as="div" margin="small 0 0" padding="x-small small" background="secondary" borderRadius="small">
         <Text size="small"><Text size="small" weight="bold">Instructor tip: </Text>Learning objectives should specify observable student abilities or behaviors.</Text>
       </View>
@@ -79,7 +95,7 @@ function Block({ block, index, count }) {
       {block.kind === 'text' && (editing
         ? <TextArea label={label(block.title)} placeholder={block.placeholder} height="6rem" value={block.text} messages={block.hint ? [{ text: block.hint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
         : <Text as="p">{block.text ? block.text : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>)}
-      {block.kind === 'objectives' && <Objectives block={block} />}
+      {block.kind === 'objectives' && <Objectives block={block} editing={editing} dispatch={dispatch} />}
       {block.kind === 'contact' && (editing
         ? <ContactForm block={block} dispatch={dispatch} />
         : contactEmpty(block)

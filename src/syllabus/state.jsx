@@ -42,6 +42,14 @@ export function reducer(s, a) {
       return updateBlock(s, a.id, (b) => ({ ...b, fields: { ...b.fields, [a.field]: a.value } }))
     case 'setPhoto':
       return updateBlock(s, a.id, (b) => ({ ...b, photo: a.value }))
+    case 'editLead':
+      return updateBlock(s, a.id, (b) => ({ ...b, lead: a.value }))
+    case 'editItem':
+      return updateBlock(s, a.id, (b) => ({ ...b, items: b.items.map((x, i) => (i === a.index ? a.value : x)) }))
+    case 'addItem':
+      return updateBlock(s, a.id, (b) => ({ ...b, items: [...b.items, ''] }))
+    case 'removeItem':
+      return updateBlock(s, a.id, (b) => ({ ...b, items: b.items.filter((_, i) => i !== a.index) }))
     case 'phase':
       return { ...s, phase: a.phase }
     default:
