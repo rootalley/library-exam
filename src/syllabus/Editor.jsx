@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react'
 import { View, Flex, Heading, Text, Button, IconButton, TextInput, TextArea, Pill, Checkbox, ScreenReaderContent } from '@instructure/ui'
-import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAddLine, IconCheckMarkSolid } from '@instructure/ui-icons'
+import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAddLine, IconCheckMarkSolid, IconWarningLine } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
 import { ContactCard, contactEmpty, profilePhoto } from './Contact.jsx'
 import { CourseSummaryTable } from './CourseSummary.jsx'
-import { blockTypes } from './sample.js'
+import { blockTypes, TERM_OLD, TERM_NEW } from './sample.js'
 
 // hidden label so the text box still has a name for screen readers
 const label = (t) => <ScreenReaderContent>{t}</ScreenReaderContent>
@@ -145,11 +145,45 @@ function Block({ block, index, count }) {
   )
 }
 
+// a line with a green check or a yellow warning in front of it
+function Check({ ok, children }) {
+  return (
+    <Flex gap="x-small" alignItems="start" margin="0 0 x-small">
+      <Flex.Item>{ok ? <IconCheckMarkSolid color="success" /> : <IconWarningLine color="warning" />}</Flex.Item>
+      <Flex.Item shouldShrink>{children}</Flex.Item>
+    </Flex>
+  )
+}
+
 // the panel on the right: the checks before publishing and a Preview button
 function Panel({ state, dispatch }) {
+  // a blank syllabus has nothing old to bring forward
+  const imported = state.source !== 'blank'
+
   return (
     <View as="aside" display="block" borderWidth="small" borderRadius="medium" padding="medium" background="secondary" aria-label="Review">
       <Heading level="h3" margin="0 0 small">Review</Heading>
+      {imported && (
+        <View as="div" margin="0 0 medium">
+          <Text weight="bold">Dates</Text>
+          {!state.datesShifted ? (
+            <div>
+              <View as="div" margin="x-small 0"><Text>These dates are from {TERM_OLD}:</Text></View>
+              <View as="div" margin="0 0 x-small">
+                {state.blocks.filter((b) => b.kind === 'coursesummary').flatMap((b) => b.rows).map((r, i) => (
+                  <View as="div" key={i}><Text size="small">{r.date}</Text></View>
+                ))}
+              </View>
+              <Button size="small" color="primary" onClick={() => dispatch({ type: 'shiftDates' })}>Move all dates to {TERM_NEW}</Button>
+            </div>
+          ) : (
+            <div>
+              <Check ok>Dates moved to {TERM_NEW}.</Check>
+              {state.dateLog.map((d) => <View as="div" key={d}><Text size="small">{d}</Text></View>)}
+            </div>
+          )}
+        </View>
+      )}
       <Button color="primary" display="block" onClick={() => dispatch({ type: 'phase', phase: 'preview' })}>Preview</Button>
     </View>
   )
