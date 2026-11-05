@@ -5,11 +5,17 @@ const CATALOG_HINT = "Paste the description exactly as it appears in the univers
 const CATALOG_PROMPT = "Paste the exact course description from the university's catalog."
 const MEETINGS_PROMPT = 'When and where the class meets: days, times, and room or online meeting instructions.'
 
+const GRADING_HINT = 'Explain how grades are calculated and assigned, such as late work and the letter-grade scale.'
 const LEAD_IN = 'Upon successful completion of the course, you will be able to:'
+
+const emptyContact = () => ({ name: '', title: '', department: '', email: '', phone: '', office: '', officeHours: '', assistants: '' })
 
 // the kinds of block the instructor can add
 export const blockTypes = [
   { kind: 'text', title: 'Course Description', placeholder: CATALOG_PROMPT, hint: CATALOG_HINT },
+  { kind: 'contact', title: 'Instructor Info' },
+  { kind: 'objectives', title: 'Learning Objectives' },
+  { kind: 'grading', title: 'Grading Scheme' },
   { kind: 'text', title: 'Class Meetings', placeholder: MEETINGS_PROMPT },
   { kind: 'text', title: 'Free Text', placeholder: 'Anything unique to your course.' },
 ]
@@ -17,6 +23,9 @@ export const blockTypes = [
 // a new instructor never sees an empty page, these are the blocks they start with
 export const starterBlocks = () => [
   { id: 'catalog', kind: 'text', title: 'Course Description', text: '', placeholder: CATALOG_PROMPT, hint: CATALOG_HINT },
+  { id: 'instructor', kind: 'contact', title: 'Instructor Info', photo: false, fields: emptyContact() },
+  { id: 'objectives', kind: 'objectives', title: 'Learning Objectives', lead: LEAD_IN, items: ['', '', ''] },
+  { id: 'grading', kind: 'grading', title: 'Grading Scheme', rows: [{ category: '', weight: '' }, { category: '', weight: '' }, { category: '', weight: '' }], policy: '', policyHint: GRADING_HINT },
   { id: 'meetings', kind: 'text', title: 'Class Meetings', text: '', placeholder: MEETINGS_PROMPT },
 ]
 
@@ -31,3 +40,6 @@ export const importedBlocks = () => [
     policy: 'Late homework loses 10% per day for up to three days. Letter grades follow the university scale.' },
   { id: 'meetings', kind: 'text', title: 'Class Meetings', text: 'This is the Spring 2026 section. It meets Tuesdays and Thursdays in Science Hall Room 214.' },
 ]
+
+export const GRADING_POLICY_HINT = GRADING_HINT
+export { LEAD_IN, emptyContact }
