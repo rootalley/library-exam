@@ -145,21 +145,37 @@ function Block({ block, index, count }) {
   )
 }
 
+// the panel on the right: the checks before publishing and a Preview button
+function Panel({ state, dispatch }) {
+  return (
+    <View as="aside" display="block" borderWidth="small" borderRadius="medium" padding="medium" background="secondary" aria-label="Review">
+      <Heading level="h3" margin="0 0 small">Review</Heading>
+      <Button color="primary" display="block" onClick={() => dispatch({ type: 'phase', phase: 'preview' })}>Preview</Button>
+    </View>
+  )
+}
+
 // the blocks of the syllabus
 export function Editor() {
   const { state, dispatch } = useSyllabus()
 
   return (
-    <div>
-      {state.blocks.map((b, i) => <Block key={b.id} block={b} index={i} count={state.blocks.length} />)}
-      <View as="div" margin="medium 0 0">
-        <Text weight="bold">Add a block</Text>
-        <View as="div" margin="x-small 0 0">
-          {blockTypes.map((t, i) => (
-            <Button key={t.title} size="small" margin="0 x-small x-small 0" renderIcon={IconAddLine} onClick={() => dispatch({ type: 'addBlock', index: i })}>{t.title}</Button>
-          ))}
+    <Flex alignItems="start" gap="medium">
+      <Flex.Item shouldGrow shouldShrink>
+        {state.blocks.map((b, i) => <Block key={b.id} block={b} index={i} count={state.blocks.length} />)}
+        <View as="div" margin="medium 0 0">
+          <Text weight="bold">Add a block</Text>
+          <View as="div" margin="x-small 0 0">
+            {blockTypes.map((t, i) => (
+              <Button key={t.title} size="small" margin="0 x-small x-small 0" renderIcon={IconAddLine} onClick={() => dispatch({ type: 'addBlock', index: i })}>{t.title}</Button>
+            ))}
+          </View>
         </View>
-      </View>
-    </div>
+      </Flex.Item>
+      <Flex.Item size="19rem">
+        {/* sticky keeps the panel on screen while the blocks scroll, MDN position (see sticky positioning): https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/position */}
+        <div style={{ position: 'sticky', top: 8 }}><Panel state={state} dispatch={dispatch} /></div>
+      </Flex.Item>
+    </Flex>
   )
 }
