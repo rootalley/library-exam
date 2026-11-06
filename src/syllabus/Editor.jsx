@@ -5,6 +5,7 @@ import { useSyllabus, activeFlags, missingStatements } from './state.jsx'
 import { ContactCard, contactEmpty, profilePhoto } from './Contact.jsx'
 import { CourseSummaryTable } from './CourseSummary.jsx'
 import { Marked } from './Marked.jsx'
+import { ListEditor, ListView } from './List.jsx'
 import { LockedStatement } from '../shared.jsx'
 import { course } from '../data.js'
 import { blockTypes, TERM_OLD, TERM_NEW } from './sample.js'
@@ -145,6 +146,9 @@ function Block({ block, index, count, flags }) {
           </View>
         </div>
       )}
+      {block.kind === 'list' && (editing
+        ? <ListEditor block={block} dispatch={dispatch} />
+        : <ListView items={block.items} empty="Nothing listed yet. Select Edit to add an item." />)}
       {block.kind === 'grading' && <Rows block={block} editing={editing} dispatch={dispatch} />}
       {block.kind === 'objectives' && <Objectives block={block} editing={editing} dispatch={dispatch} />}
       {block.kind === 'contact' && (editing

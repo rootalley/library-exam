@@ -39,6 +39,11 @@ export const importedFlags = () => [
   { id: 'f-ta', blockId: 'instructor', text: 'Jordan Lee', note: "Last term's teaching assistant", resolved: false },
 ]
 
+// tips that keep the two lists apart
+const MATERIALS_TIP = 'Materials are items students are expected to purchase. Items the university provides belong under Readings.'
+const READINGS_TIP = 'Readings are provided by the university. Items students must buy belong under Course Materials.'
+export const item = (input = '', focus = false) => ({ input, entry: null, status: 'idle', focus })
+
 const GRADING_HINT = 'Explain how grades are calculated and assigned, such as late work and the letter-grade scale.'
 const LEAD_IN = 'Upon successful completion of the course, you will be able to:'
 
@@ -52,6 +57,8 @@ export const blockTypes = [
   { kind: 'coursesummary', title: 'Course Summary' },
   { kind: 'grading', title: 'Grading Scheme' },
   { kind: 'text', title: 'Class Meetings', placeholder: MEETINGS_PROMPT },
+  { kind: 'list', title: 'Course Materials', tip: MATERIALS_TIP },
+  { kind: 'list', title: 'Readings', tip: READINGS_TIP },
   { kind: 'policies', title: 'Policies' },
   { kind: 'text', title: 'Free Text', placeholder: 'Anything unique to your course.' },
 ]
@@ -64,6 +71,8 @@ export const starterBlocks = () => [
   { id: 'coursesummary', kind: 'coursesummary', title: 'Course Summary', enabled: true, rows: shiftRows(summaryRows2026()) },
   { id: 'grading', kind: 'grading', title: 'Grading Scheme', rows: [{ category: '', weight: '' }, { category: '', weight: '' }, { category: '', weight: '' }], policy: '', policyHint: GRADING_HINT },
   { id: 'meetings', kind: 'text', title: 'Class Meetings', text: '', placeholder: MEETINGS_PROMPT },
+  { id: 'materials', kind: 'list', title: 'Course Materials', tip: MATERIALS_TIP, items: [item()] },
+  { id: 'readings', kind: 'list', title: 'Readings', tip: READINGS_TIP, items: [item()] },
   { id: 'policies', kind: 'policies', title: 'Policies', statementIds: course.statements.map((s) => s.id) },
 ]
 

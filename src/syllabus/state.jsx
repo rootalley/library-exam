@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer } from 'react'
 import { course } from '../data.js'
-import { importedBlocks, importedFlags, starterBlocks, blockTypes, emptyContact, shiftRows, summaryRows2026, TERM_NEW, LEAD_IN, GRADING_POLICY_HINT } from './sample.js'
+import { importedBlocks, importedFlags, item, starterBlocks, blockTypes, emptyContact, shiftRows, summaryRows2026, TERM_NEW, LEAD_IN, GRADING_POLICY_HINT } from './sample.js'
 
 const Ctx = createContext(null)
 export const useSyllabus = () => useContext(Ctx)
@@ -45,6 +45,12 @@ export function reducer(s, a) {
       const title = course.statements.find((x) => x.id === a.id).title
       return { ...st, log: [...s.log, `Inserted the ${title} statement (locked)`] }
     }
+    case 'editListItem':
+      return updateBlock(s, a.id, (b) => ({ ...b, items: b.items.map((x, i) => (i === a.index ? item(a.value) : x)) }))
+    case 'addListItem':
+      return updateBlock(s, a.id, (b) => ({ ...b, items: [...b.items, item()] }))
+    case 'removeListItem':
+      return updateBlock(s, a.id, (b) => ({ ...b, items: b.items.filter((_, i) => i !== a.index) }))
     case 'editText':
       return updateBlock(s, a.id, (b) => ({ ...b, text: a.text }))
     case 'move': {
@@ -62,10 +68,11 @@ export function reducer(s, a) {
     }
     case 'addBlock': {
       const t = blockTypes[a.index]
-      const b = { id: `n${s.nextId}`, kind: t.kind, title: t.title, placeholder: t.placeholder, hint: t.hint }
+      const b = { id: `n${s.nextId}`, kind: t.kind, title: t.title, placeholder: t.placeholder, hint: t.hint, tip: t.tip }
       if (t.kind === 'contact') { b.fields = emptyContact(); b.photo = false }
       if (t.kind === 'objectives') { b.lead = LEAD_IN; b.items = [''] }
       if (t.kind === 'coursesummary') { b.enabled = true; b.rows = shiftRows(summaryRows2026()) }
+      if (t.kind === 'list') b.items = [item()]
       if (t.kind === 'policies') b.statementIds = course.statements.map((x) => x.id)
       if (t.kind === 'text') b.text = ''
       if (t.kind === 'grading') { b.rows = [{ category: '', weight: '' }]; b.policy = ''; b.policyHint = GRADING_POLICY_HINT }
