@@ -20,9 +20,10 @@ I'll build it a little at a time and commit after every piece. Started with plai
 ## editor
 - [x] list of blocks with edit, done, cancel, move up/down, remove, add a block
 - [ ] block types: text, instructor info, learning objectives, grading scheme, course summary, materials and readings, policies
-  - [x] done so far: text, instructor info, learning objectives, grading scheme
-- [ ] review panel: move all dates, details to check, required statements
-- [ ] fake file chooser, spinner, course chooser
+  - [x] done so far: text, instructor info, learning objectives, grading scheme, course summary, policies
+  - [ ] still to do: materials and readings
+- [x] review panel: move all dates, details to check, required statements
+- [x] fake file chooser, spinner, course chooser
 
 ## preview and student view
 - [ ] preview page and publish button
@@ -35,3 +36,6 @@ I'll build it a little at a time and commit after every piece. Started with plai
 - [ ] du theme and the plain canvas theme
 - [ ] restart link in the banner
 - [ ] readme
+
+## notes
+- the InstUI Modal wants shouldCloseOnDocumentClick={false} or the dialogs close when you click outside them
