@@ -96,7 +96,7 @@ export function Start() {
         <Option icon={IconAddLine} title="Start fresh" text="We'll help you build your syllabus from scratch, one block at a time." action="Start fresh" onClick={() => dispatch({ type: 'blank' })} />
       </div>
       <Text size="small" color="secondary">Prototype: the first two choices load a prepared sample syllabus (HCI 101, Spring 2026) after a short simulated wait.</Text>
-      {stage === 'scanning' && <Working title="Uploading a file" steps={[{ label: `Scaning ${FILE}…`, ms: 2500 }, { label: 'Processing your syllabus…', ms: 2500 }]} onDone={() => dispatch({ type: 'import', source: 'word' })} />}
+      {stage === 'scanning' && <Working title="Uploading a file" steps={[{ label: `Scanning ${FILE}…`, ms: 2500 }, { label: 'Processing your syllabus…', ms: 2500 }]} onDone={() => dispatch({ type: 'import', source: 'word' })} />}
       {stage === 'file' && <FileChooser onCancel={() => setStage('idle')} onOpen={() => dispatch({ type: 'import', source: 'word' })} />}
     </div>
   )
