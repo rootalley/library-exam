@@ -241,6 +241,9 @@ function Panel({ state, dispatch }) {
 export function Editor() {
   const { state, dispatch } = useSyllabus()
   const flags = activeFlags(state)
+  // there is only one Policies block and one Course Summary
+  const hasPolicies = state.blocks.some((b) => b.kind === 'policies')
+  const hasSummary = state.blocks.some((b) => b.kind === 'coursesummary')
 
   return (
     <Flex alignItems="start" gap="medium">
@@ -250,7 +253,9 @@ export function Editor() {
           <Text weight="bold">Add a block</Text>
           <View as="div" margin="x-small 0 0">
             {blockTypes.map((t, i) => (
-              <Button key={t.title} size="small" margin="0 x-small x-small 0" renderIcon={IconAddLine} onClick={() => dispatch({ type: 'addBlock', index: i })}>{t.title}</Button>
+              <Button key={t.title} size="small" margin="0 x-small x-small 0" renderIcon={IconAddLine}
+                interaction={((t.kind === 'policies' && hasPolicies) || (t.kind === 'coursesummary' && hasSummary)) ? 'disabled' : 'enabled'}
+                onClick={() => dispatch({ type: 'addBlock', index: i })}>{t.title}</Button>
             ))}
           </View>
         </View>
