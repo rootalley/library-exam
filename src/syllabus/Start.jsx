@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { View, Flex, Heading, Text, Button, Modal, CloseButton } from '@instructure/ui'
+import { useEffect, useState } from 'react'
+import { View, Flex, Heading, Text, Button, Modal, CloseButton, Spinner } from '@instructure/ui'
 import { IconUploadLine, IconCoursesLine, IconAddLine, IconFolderLine, IconDocumentLine } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
 
@@ -54,6 +54,30 @@ function FileChooser({ onCancel, onOpen }) {
   )
 }
 
+// a spinner that walks through its steps one after another (each has a label and how long it lasts), then calls onDone
+function Working({ title, steps, onDone }) {
+  const [i, setI] = useState(0)
+
+  useEffect(() => {
+    if (i >= steps.length) { onDone(); return undefined }
+    const t = setTimeout(() => setI(i + 1), steps[i].ms)
+    return () => clearTimeout(t)
+  }, [i])
+
+  const label = steps[Math.min(i, steps.length - 1)].label
+
+  return (
+    <Modal open size="small" label={title} onDismiss={() => {}} shouldCloseOnDocumentClick={false}>
+      <Modal.Body>
+        <Flex direction="column" alignItems="center" padding="large 0">
+          <Spinner renderTitle={label} size="large" />
+          <View as="div" margin="medium 0 0" aria-live="polite"><Text size="large">{label}</Text></View>
+        </Flex>
+      </Modal.Body>
+    </Modal>
+  )
+}
+
 // the three ways to start a syllabus
 export function Start() {
   const { dispatch } = useSyllabus()
@@ -72,6 +96,7 @@ export function Start() {
         <Option icon={IconAddLine} title="Start fresh" text="We'll help you build your syllabus from scratch, one block at a time." action="Start fresh" onClick={() => dispatch({ type: 'blank' })} />
       </div>
       <Text size="small" color="secondary">Prototype: the first two choices load a prepared sample syllabus (HCI 101, Spring 2026) after a short simulated wait.</Text>
+      {stage === 'scanning' && <Working title="Uploading a file" steps={[{ label: `Scaning ${FILE}…`, ms: 2500 }, { label: 'Processing your syllabus…', ms: 2500 }]} onDone={() => dispatch({ type: 'import', source: 'word' })} />}
       {stage === 'file' && <FileChooser onCancel={() => setStage('idle')} onOpen={() => dispatch({ type: 'import', source: 'word' })} />}
     </div>
   )
