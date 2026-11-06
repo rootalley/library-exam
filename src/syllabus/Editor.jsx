@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { View, Flex, Heading, Text, Button, IconButton, TextInput, TextArea, Pill, Checkbox, ScreenReaderContent } from '@instructure/ui'
 import { IconArrowUpLine, IconArrowDownLine, IconEditLine, IconTrashLine, IconAddLine, IconCheckMarkSolid, IconWarningLine } from '@instructure/ui-icons'
-import { useSyllabus, activeFlags } from './state.jsx'
+import { useSyllabus, activeFlags, missingStatements } from './state.jsx'
 import { ContactCard, contactEmpty, profilePhoto } from './Contact.jsx'
 import { CourseSummaryTable } from './CourseSummary.jsx'
 import { Marked } from './Marked.jsx'
@@ -171,6 +171,7 @@ function Panel({ state, dispatch }) {
   // a blank syllabus has nothing old to bring forward
   const imported = state.source !== 'blank'
   const flags = activeFlags(state)
+  const missing = missingStatements(state)
 
   return (
     <View as="aside" display="block" borderWidth="small" borderRadius="medium" padding="medium" background="secondary" aria-label="Review">
@@ -211,6 +212,20 @@ function Panel({ state, dispatch }) {
           <View as="div" margin="x-small 0 0"><Text size="small" color="secondary">Flagged details are highlighted in yellow. Every block can be edited, not only the flagged ones.</Text></View>
         </View>
       )}
+      <View as="div" margin="0 0 medium">
+        <Text weight="bold">Required statements</Text>
+        <View as="div" margin="x-small 0 0">
+          {course.statements.map((s) => {
+            const ok = !missing.some((m) => m.id === s.id)
+            return (
+              <Check ok={ok} key={s.id}>
+                {s.title}{ok ? '' : ' is missing. '}
+                {!ok && <Button size="small" margin="xx-small 0 0" onClick={() => dispatch({ type: 'insertStatement', id: s.id })}>Insert it</Button>}
+              </Check>
+            )
+          })}
+        </View>
+      </View>
       {state.log.length > 1 && (
         <View as="div" margin="0 0 medium">
           <Text weight="bold">Changes so far</Text>

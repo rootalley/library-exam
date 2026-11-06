@@ -38,6 +38,13 @@ export function reducer(s, a) {
       }
       return { ...st, log: [...s.log, `Kept "${f.text}"`] }
     }
+    case 'insertStatement': {
+      // put the statement back, keeping the university's order
+      const order = course.statements.map((x) => x.id)
+      const st = updateBlock(s, 'policies', (b) => ({ ...b, statementIds: order.filter((id) => id === a.id || b.statementIds.includes(id)) }))
+      const title = course.statements.find((x) => x.id === a.id).title
+      return { ...st, log: [...s.log, `Inserted the ${title} statement (locked)`] }
+    }
     case 'editText':
       return updateBlock(s, a.id, (b) => ({ ...b, text: a.text }))
     case 'move': {
@@ -109,3 +116,9 @@ export const blockText = (b) => (b.kind === 'text' ? b.text : b.kind === 'contac
 
 // flags that are still open and whose text is still in the syllabus
 export const activeFlags = (s) => s.flags.filter((f) => !f.resolved && s.blocks.some((b) => b.id === f.blockId && blockText(b).includes(f.text)))
+
+// the required statements the Policies block doesn't have yet
+export const missingStatements = (s) => {
+  const p = s.blocks.find((b) => b.kind === 'policies')
+  return p ? course.statements.filter((x) => !p.statementIds.includes(x.id)) : []
+}
