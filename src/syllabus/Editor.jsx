@@ -5,6 +5,8 @@ import { useSyllabus, activeFlags } from './state.jsx'
 import { ContactCard, contactEmpty, profilePhoto } from './Contact.jsx'
 import { CourseSummaryTable } from './CourseSummary.jsx'
 import { Marked } from './Marked.jsx'
+import { LockedStatement } from '../shared.jsx'
+import { course } from '../data.js'
 import { blockTypes, TERM_OLD, TERM_NEW } from './sample.js'
 
 // hidden label so the text box still has a name for screen readers
@@ -102,6 +104,7 @@ function Block({ block, index, count, flags }) {
   const [editing, setEditing] = useState(false)
   // the block as it was when editing started, so Cancel can put it back. useRef docs: https://react.dev/reference/react/useRef
   const summary = block.kind === 'coursesummary'
+  const policies = block.kind === 'policies'
   const snapshot = useRef(block)
   const startEditing = () => { snapshot.current = block; setEditing(true) }
   const cancelEditing = () => { dispatch({ type: 'restoreBlock', block: snapshot.current }); setEditing(false) }
@@ -112,20 +115,27 @@ function Block({ block, index, count, flags }) {
         <Flex.Item shouldGrow>
           <Heading level="h3" as="h3">{block.title}</Heading>
         </Flex.Item>
+        {policies && <Flex.Item><Pill color="info">Locked</Pill></Flex.Item>}
         <Flex.Item><IconButton screenReaderLabel={`Move ${block.title} up`} renderIcon={IconArrowUpLine} size="small" withBackground={false} withBorder={false} interaction={index === 0 ? 'disabled' : 'enabled'} onClick={() => dispatch({ type: 'move', id: block.id, dir: -1 })} /></Flex.Item>
         <Flex.Item><IconButton screenReaderLabel={`Move ${block.title} down`} renderIcon={IconArrowDownLine} size="small" withBackground={false} withBorder={false} interaction={index === count - 1 ? 'disabled' : 'enabled'} onClick={() => dispatch({ type: 'move', id: block.id, dir: 1 })} /></Flex.Item>
         {summary && <Flex.Item><Checkbox label="Show to students" checked={block.enabled} onChange={() => dispatch({ type: 'toggleBlock', id: block.id })} margin="0 small" /></Flex.Item>}
-        {!summary && editing && <Flex.Item><Button size="small" margin="0 0 0 x-small" onClick={cancelEditing}>Cancel</Button></Flex.Item>}
-        {!summary && (
+        {!policies && !summary && editing && <Flex.Item><Button size="small" margin="0 0 0 x-small" onClick={cancelEditing}>Cancel</Button></Flex.Item>}
+        {!policies && !summary && (
           <Flex.Item>
             <Button size="small" renderIcon={editing ? IconCheckMarkSolid : IconEditLine} margin="0 x-small" onClick={() => (editing ? setEditing(false) : startEditing())}>{editing ? 'Done' : 'Edit'}</Button>
           </Flex.Item>
         )}
-        {!summary && <Flex.Item><IconButton screenReaderLabel={`Remove ${block.title}`} renderIcon={IconTrashLine} size="small" withBackground={false} withBorder={false} onClick={() => dispatch({ type: 'removeBlock', id: block.id })} /></Flex.Item>}
+        {!summary && <Flex.Item><IconButton screenReaderLabel={policies ? 'Policies is required and cannot be removed' : `Remove ${block.title}`} renderIcon={IconTrashLine} size="small" withBackground={false} withBorder={false} interaction={policies ? 'disabled' : 'enabled'} onClick={() => dispatch({ type: 'removeBlock', id: block.id })} /></Flex.Item>}
       </Flex>
       {block.kind === 'text' && (editing
         ? <TextArea label={label(block.title)} placeholder={block.placeholder} height="6rem" value={block.text} messages={block.hint ? [{ text: block.hint, type: 'hint' }] : []} onChange={(e) => dispatch({ type: 'editText', id: block.id, text: e.target.value })} />
         : <Text as="p">{block.text ? <Marked text={block.text} flags={flags.filter((f) => f.blockId === block.id)} /> : <Text color="secondary" fontStyle="italic">{block.placeholder}</Text>}</Text>)}
+      {policies && (
+        <div>
+          {course.statements.filter((s) => block.statementIds.includes(s.id)).map((s) => <LockedStatement key={s.id} {...s} />)}
+          <Text size="small" color="secondary">The university supplies these statements, so they can't be edited here.</Text>
+        </div>
+      )}
       {summary && (
         <div>
           <div style={{ opacity: block.enabled ? 1 : 0.45 }}><CourseSummaryTable rows={block.rows} /></div>

@@ -1,4 +1,5 @@
 import { createContext, useContext, useReducer } from 'react'
+import { course } from '../data.js'
 import { importedBlocks, importedFlags, starterBlocks, blockTypes, emptyContact, shiftRows, summaryRows2026, TERM_NEW, LEAD_IN, GRADING_POLICY_HINT } from './sample.js'
 
 const Ctx = createContext(null)
@@ -58,6 +59,7 @@ export function reducer(s, a) {
       if (t.kind === 'contact') { b.fields = emptyContact(); b.photo = false }
       if (t.kind === 'objectives') { b.lead = LEAD_IN; b.items = [''] }
       if (t.kind === 'coursesummary') { b.enabled = true; b.rows = shiftRows(summaryRows2026()) }
+      if (t.kind === 'policies') b.statementIds = course.statements.map((x) => x.id)
       if (t.kind === 'text') b.text = ''
       if (t.kind === 'grading') { b.rows = [{ category: '', weight: '' }]; b.policy = ''; b.policyHint = GRADING_POLICY_HINT }
       return { ...s, blocks: [...s.blocks, b], nextId: s.nextId + 1, log: [...s.log, `Added ${t.title}`] }

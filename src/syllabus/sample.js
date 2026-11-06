@@ -52,6 +52,7 @@ export const blockTypes = [
   { kind: 'coursesummary', title: 'Course Summary' },
   { kind: 'grading', title: 'Grading Scheme' },
   { kind: 'text', title: 'Class Meetings', placeholder: MEETINGS_PROMPT },
+  { kind: 'policies', title: 'Policies' },
   { kind: 'text', title: 'Free Text', placeholder: 'Anything unique to your course.' },
 ]
 
@@ -63,6 +64,7 @@ export const starterBlocks = () => [
   { id: 'coursesummary', kind: 'coursesummary', title: 'Course Summary', enabled: true, rows: shiftRows(summaryRows2026()) },
   { id: 'grading', kind: 'grading', title: 'Grading Scheme', rows: [{ category: '', weight: '' }, { category: '', weight: '' }, { category: '', weight: '' }], policy: '', policyHint: GRADING_HINT },
   { id: 'meetings', kind: 'text', title: 'Class Meetings', text: '', placeholder: MEETINGS_PROMPT },
+  { id: 'policies', kind: 'policies', title: 'Policies', statementIds: course.statements.map((s) => s.id) },
 ]
 
 // what a word file or last term's canvas page would turn into: one block per heading
@@ -77,6 +79,8 @@ export const importedBlocks = () => [
   { id: 'grading', kind: 'grading', title: 'Grading Scheme', rows: course.grading.map((g) => ({ ...g })),
     policy: 'Late homework loses 10% per day for up to three days. Letter grades follow the university scale.' },
   { id: 'meetings', kind: 'text', title: 'Class Meetings', text: `This is the ${TERM_OLD} section. It meets Tuesdays and Thursdays in Science Hall Room 214.` },
+  // the old file lacked the Accommodations statement, so the check finds it missing
+  { id: 'policies', kind: 'policies', title: 'Policies', statementIds: ['integrity', 'support'] },
 ]
 
 export const GRADING_POLICY_HINT = GRADING_HINT
