@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { View, Flex, Heading, Text, Button, Modal, CloseButton, Spinner, RadioInputGroup, RadioInput } from '@instructure/ui'
+import { View, Flex, Heading, Text, Button, Modal, CloseButton, Spinner, RadioInputGroup, RadioInput, Alert, Link } from '@instructure/ui'
 import { IconUploadLine, IconCoursesLine, IconAddLine, IconFolderLine, IconDocumentLine } from '@instructure/ui-icons'
 import { course } from '../data.js'
 import { useSyllabus } from './state.jsx'
@@ -112,7 +112,7 @@ function Working({ title, steps, onDone }) {
 
 // the three ways to start a syllabus
 export function Start() {
-  const { dispatch } = useSyllabus()
+  const { state, dispatch } = useSyllabus()
   // which dialog is open: idle means none
   const [stage, setStage] = useState('idle')
   // the course picked in the dialog, the spinner message uses it
@@ -120,6 +120,13 @@ export function Start() {
 
   return (
     <div>
+      {/* coming back to this step with a syllabus already started, so say what choosing again does */}
+      {state.blocks.length > 0 && (
+        <Alert variant="info" margin="0 0 medium" renderCloseButtonLabel={null}>
+          You have a syllabus in progress. Choosing a way to start here replaces it.{' '}
+          <Link href="#" isWithinText={false} onClick={(e) => { e.preventDefault(); dispatch({ type: 'phase', phase: 'edit' }) }}>Continue editing</Link>
+        </Alert>
+      )}
       {/* align-items stretch makes the cards the same height, this MDN page on aligning flex items explains it: https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Flexible_box_layout/Aligning_items */}
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'stretch', gap: 24, margin: '0 0 24px' }}>
         {/* upload a file goes here */}
