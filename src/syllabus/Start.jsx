@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { View, Flex, Heading, Text, Button, Modal, CloseButton, Spinner } from '@instructure/ui'
+import { View, Flex, Heading, Text, Button, Modal, CloseButton, Spinner, RadioInputGroup, RadioInput } from '@instructure/ui'
 import { IconUploadLine, IconCoursesLine, IconAddLine, IconFolderLine, IconDocumentLine } from '@instructure/ui-icons'
+import { course } from '../data.js'
 import { useSyllabus } from './state.jsx'
 
 // one of the three boxes: icon, title, a sentence and a button
@@ -17,6 +18,13 @@ function Option({ icon: Icon, title, text, action, onClick, primary }) {
 }
 
 const FILE = 'my_syllabus.docx'
+
+// only last term's sections, the sample syllabus is Spring 2026 so every choice matches it
+const COURSES = [
+  `HCI 101-01 ${course.title}, Spring 2026`,
+  `HCI 101-02 ${course.title}, Spring 2026`,
+  `HCI 101-H1 ${course.title} (Honors), Spring 2026`,
+]
 
 // pretend file chooser with one folder and one file
 // the Modal props come from the InstUI package: https://github.com/instructure/instructure-ui/tree/master/packages/ui-modal
@@ -54,6 +62,30 @@ function FileChooser({ onCancel, onOpen }) {
   )
 }
 
+// pretend course picker for copying a previous syllabus
+function CourseChooser({ onCancel, onImport }) {
+  const [picked, setPicked] = useState(null)
+
+  return (
+    <Modal open size="small" label="Copy a previous syllabus" onDismiss={onCancel} shouldCloseOnDocumentClick={false}>
+      <Modal.Header>
+        <CloseButton placement="end" offset="small" onClick={onCancel} screenReaderLabel="Cancel" />
+        <Heading>Copy a previous syllabus</Heading>
+      </Modal.Header>
+      <Modal.Body>
+        <RadioInputGroup name="past-course" description="Choose the course to copy from" value={picked || ''} onChange={(e, v) => setPicked(v)}>
+          {COURSES.map((c) => <RadioInput key={c} value={c} label={c} />)}
+        </RadioInputGroup>
+        <View as="div" margin="small 0 0"><Text size="small" color="secondary">Prototype: every course loads the same sample syllabus.</Text></View>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button margin="0 x-small 0 0" onClick={onCancel}>Cancel</Button>
+        <Button color="primary" interaction={picked ? 'enabled' : 'disabled'} onClick={() => onImport(picked)}>Import</Button>
+      </Modal.Footer>
+    </Modal>
+  )
+}
+
 // a spinner that walks through its steps one after another (each has a label and how long it lasts), then calls onDone
 function Working({ title, steps, onDone }) {
   const [i, setI] = useState(0)
@@ -83,6 +115,8 @@ export function Start() {
   const { dispatch } = useSyllabus()
   // which dialog is open: idle means none
   const [stage, setStage] = useState('idle')
+  // the course picked in the dialog, the spinner message uses it
+  const [picked, setPicked] = useState(COURSES[0])
 
   return (
     <div>
@@ -91,12 +125,14 @@ export function Start() {
         {/* upload a file goes here */}
         <Option primary icon={IconUploadLine} title="Upload a file" text="We'll turn your Word or PDF file into editable blocks and flag anything that needs an update." action="Choose a file" onClick={() => setStage('file')} />
         {/* copy previous syllabus goes here */}
-        <Option icon={IconCoursesLine} title="Copy previous syllabus" text="We'll copy the syllabus from a past Canvas course, with dates moved to the new term." action="Choose a course" />
+        <Option icon={IconCoursesLine} title="Copy previous syllabus" text="We'll copy the syllabus from a past Canvas course, with dates moved to the new term." action="Choose a course" onClick={() => setStage('course')} />
         {/* start fresh goes here */}
         <Option icon={IconAddLine} title="Start fresh" text="We'll help you build your syllabus from scratch, one block at a time." action="Start fresh" onClick={() => dispatch({ type: 'blank' })} />
       </div>
       <Text size="small" color="secondary">Prototype: the first two choices load a prepared sample syllabus (HCI 101, Spring 2026) after a short simulated wait.</Text>
       {stage === 'scanning' && <Working title="Uploading a file" steps={[{ label: `Scanning ${FILE}…`, ms: 2500 }, { label: 'Processing your syllabus…', ms: 2500 }]} onDone={() => dispatch({ type: 'import', source: 'word' })} />}
+      {stage === 'course' && <CourseChooser onCancel={() => setStage('idle')} onImport={(c) => { setPicked(c); setStage('importing') }} />}
+      {stage === 'importing' && <Working title="Copying a previous syllabus" steps={[{ label: `Importing ${picked}…`, ms: 4000 }]} onDone={() => dispatch({ type: 'import', source: 'canvas' })} />}
       {stage === 'file' && <FileChooser onCancel={() => setStage('idle')} onOpen={() => setStage('scanning')} />}
     </div>
   )
