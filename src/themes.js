@@ -48,16 +48,35 @@ const brands = {
   },
 }
 
+// the plain canvas look when there is no ?theme: no logo, the standard nav icons, canvas's own colors
+const neutral = {
+  name: 'default',
+  logo: null,
+  nav: [
+    { label: 'Account', avatar: true },
+    { label: 'Dashboard', icon: 'dashboard' },
+    { label: 'Courses', icon: 'courses' },
+    { label: 'Calendar', icon: 'calendar' },
+    { label: 'Inbox', icon: 'inbox' },
+    { label: 'Help', icon: 'question' },
+  ],
+  vars: {
+    'ic-brand-global-nav-bgd': '#394b58',
+    'ic-link-color': '#0374b5',
+    'ic-brand-font-color-dark': '#273540',
+  },
+}
+
 export const images = { avatar, commons, my_media: myMedia }
 
-// ?theme=gt or ?theme=du picks the school, gt is the default for now
+// ?theme=gt or ?theme=du picks the school, anything else is the plain canvas look
 // URLSearchParams docs: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
 export function brandFromUrl() {
   const name = new URLSearchParams(window.location.search).get('theme')
-  return brands[name] || brands.gt
+  return brands[name] || neutral
 }
 
 // the instui theme is the canvas theme with the school's colors on top
 export function instuiTheme(brand) {
-  return { ...canvas, ...brand.vars }
+  return brand === neutral ? canvas : { ...canvas, ...brand.vars }
 }

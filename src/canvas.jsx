@@ -1,10 +1,16 @@
 // canvas chrome: global nav, course header, course nav
-import { IconArrowOpenEndSolid, IconHamburgerLine, IconOffLine, IconStudentViewLine, IconEducatorsLine } from '@instructure/ui-icons'
+import {
+  IconDashboardLine, IconCoursesLine, IconCalendarMonthLine, IconInboxLine, IconQuestionLine,
+  IconArrowOpenEndSolid, IconHamburgerLine, IconOffLine, IconStudentViewLine, IconEducatorsLine,
+} from '@instructure/ui-icons'
 import { images } from './themes.js'
 import courseNav from './brands/course_nav.json'
 import { useSyllabus } from './syllabus/state.jsx'
 
 const FONT = 'Lato, "Lato Extended", "Helvetica Neue", Helvetica, Arial, sans-serif'
+
+// the plain canvas theme uses these icons from InstUI instead of the live canvas svgs
+const generic = { dashboard: IconDashboardLine, courses: IconCoursesLine, calendar: IconCalendarMonthLine, inbox: IconInboxLine, question: IconQuestionLine }
 
 function NavIcon({ item }) {
   if (item.avatar) {
@@ -15,7 +21,8 @@ function NavIcon({ item }) {
     // the svg strings from canvas go in as raw html, react docs on dangerouslySetInnerHTML: https://react.dev/reference/react-dom/components/common#dangerously-setting-the-inner-html
     return <span className="ic-nav-svg" dangerouslySetInnerHTML={{ __html: item.svg }} />
   }
-  return null
+  const G = generic[item.icon]
+  return G ? <G style={{ fontSize: 26, display: 'block', margin: '0 auto' }} /> : null
 }
 
 export function GlobalNav({ brand, active = 'Courses' }) {
@@ -27,9 +34,11 @@ export function GlobalNav({ brand, active = 'Courses' }) {
     <nav style={{ width: 84, background: brand.vars['ic-brand-global-nav-bgd'], color: '#fff', fontFamily: FONT, flex: 'none', overflowY: 'auto' }}>
       {/* every icon gets the same 26px box so they line up */}
       <style>{`.ic-nav-svg svg{width:26px;height:26px;display:block;margin:0 auto;fill:currentColor}`}</style>
-      <div style={{ height: 85, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <img src={brand.logo} alt="" style={{ width: 72, height: 72, objectFit: 'contain' }} />
-      </div>
+      {brand.logo && (
+        <div style={{ height: 85, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <img src={brand.logo} alt="" style={{ width: 72, height: 72, objectFit: 'contain' }} />
+        </div>
+      )}
       <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
         {brand.nav.map((item) => {
           const on = item.label === active
