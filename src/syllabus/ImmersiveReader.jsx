@@ -1,7 +1,7 @@
 // the Immersive Reader for the syllabus page. Canvas has a real one, this copies the parts the prototype shows
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { View, Flex, Text, Button, IconButton, Modal } from '@instructure/ui'
-import { IconImmersiveReaderLine, IconArrowOpenStartLine } from '@instructure/ui-icons'
+import { IconImmersiveReaderLine, IconArrowOpenStartLine, IconPlayLine, IconPauseLine } from '@instructure/ui-icons'
 import { course } from '../data.js'
 import { CONTACT_ROWS, filled } from './Contact.jsx'
 import { describe } from './lookup.js'
@@ -44,11 +44,56 @@ function sentencesOf(text) {
   return out
 }
 
+// reads a query string param, ?nospeech=1 turns the voice off so the highlight can be checked quietly
+const q = (k) => new URLSearchParams(window.location.search).get(k)
+
 function Reader({ blocks, onClose }) {
-  const paras = paragraphs(blocks)
-  // every sentence gets a number across the whole page, the read aloud highlight will use it
-  let n = 0
-  const flat = paras.map((p) => ({ ...p, sentences: sentencesOf(p.text).map((t) => ({ t, i: n++ })) }))
+  const paras = useMemo(() => paragraphs(blocks), [blocks])
+  // every sentence gets a number across the whole page, the read aloud highlight uses it
+  const flat = useMemo(() => {
+    let n = 0
+    return paras.map((p) => ({ ...p, sentences: sentencesOf(p.text).map((t) => ({ t, i: n++ })) }))
+  }, [paras])
+  const sentenceList = useMemo(() => flat.flatMap((p) => p.sentences.map((s) => s.t)), [flat])
+
+  const [reading, setReading] = useState(false)
+  // idx is the sentence being read, -1 when nothing is
+  const [idx, setIdx] = useState(-1)
+
+  // reads one sentence at a time and moves the highlight along
+  // speechSynthesis.speak and the utterance end event: https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis
+  // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/end_event
+  // with no voices in the browser a timer moves the highlight instead, so it still works
+  useEffect(() => {
+    if (!reading) return undefined
+    if (idx >= sentenceList.length) { setReading(false); setIdx(-1); return undefined }
+    const text = sentenceList[idx].trim()
+    let done = false
+    const next = () => { if (!done) { done = true; setIdx((i) => i + 1) } }
+    // rough reading time, a third of a second a word
+    const est = Math.max(900, text.split(/\s+/).length * 330)
+    const synth = window.speechSynthesis
+    let safety
+    if (synth && typeof SpeechSynthesisUtterance !== 'undefined' && q('nospeech') !== '1') {
+      const u = new SpeechSynthesisUtterance(text)
+      u.onend = next
+      u.onerror = (e) => { if (e.error !== 'interrupted' && e.error !== 'canceled') next() }
+      synth.speak(u)
+      // some browsers never fire end, so move on after twice the estimate
+      safety = setTimeout(next, est * 2 + 2000)
+    } else {
+      safety = setTimeout(next, est)
+    }
+    return () => { done = true; clearTimeout(safety); if (synth) synth.cancel() }
+  }, [reading, idx, sentenceList])
+
+  // closing the reader stops the voice
+  useEffect(() => () => { if (window.speechSynthesis) window.speechSynthesis.cancel() }, [])
+
+  const toggleRead = () => {
+    if (reading) setReading(false)
+    else { if (idx < 0) setIdx(0); setReading(true) }
+  }
 
   return (
     <Modal open size="fullscreen" label="Immersive Reader" onDismiss={onClose} shouldCloseOnDocumentClick={false}>
@@ -56,6 +101,7 @@ function Reader({ blocks, onClose }) {
         <Flex gap="small" wrap="wrap" alignItems="center">
           <Flex.Item><IconButton screenReaderLabel="Exit Immersive Reader" renderIcon={IconArrowOpenStartLine} onClick={onClose} /></Flex.Item>
           <Flex.Item margin="0 medium 0 0"><Text weight="bold" size="large">Immersive Reader</Text></Flex.Item>
+          <Flex.Item><Button renderIcon={reading ? IconPauseLine : IconPlayLine} color="primary" onClick={toggleRead}>{reading ? 'Pause' : 'Read aloud'}</Button></Flex.Item>
         </Flex>
       </Modal.Header>
       <Modal.Body padding="none">
@@ -65,7 +111,7 @@ function Reader({ blocks, onClose }) {
               const style = p.type === 'h' ? { fontSize: '1.35em', fontWeight: 700, margin: '1.4em 0 0.3em' } : p.type === 'h3' ? { fontWeight: 700, margin: '0.8em 0 0.2em' } : { margin: '0 0 0.7em' }
               return (
                 <div key={pi} style={style}>
-                  {p.sentences.map((s) => <span key={s.i} id={`ir-s-${s.i}`}>{s.t}</span>)}
+                  {p.sentences.map((s) => <span key={s.i} id={`ir-s-${s.i}`} style={{ background: s.i === idx ? '#ffe066' : 'transparent', color: s.i === idx ? '#1b1b1b' : 'inherit', borderRadius: 3 }}>{s.t}</span>)}
                 </div>
               )
             })}
