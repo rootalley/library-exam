@@ -26,8 +26,17 @@ export function SyllabusPage({ blocks: allBlocks, heading }) {
 
   return (
     <div>
-      {heading}
-      <JumpLinks items={blocks.map((b) => b.title)} />
+      {heading ? (
+        // the title and jump links stay put while the syllabus scrolls under them
+        // zIndex 2 keeps the frozen header above the blocks, how z-index stacks things is on MDN: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/z-index
+        <div style={{ position: 'sticky', top: 0, zIndex: 2, background: '#fff', padding: '12px 0 8px', marginTop: -12, borderBottom: '1px solid #e8eaec' }}>
+          <div>{heading}</div>
+          <JumpLinks items={blocks.map((b) => b.title)} margin="0" />
+        </div>
+      ) : (
+        <JumpLinks items={blocks.map((b) => b.title)} />
+      )}
+      {heading && <div style={{ height: 16 }} />}
       <Summary grading={grading} exams={exams} />
       {blocks.map((b) => (
         <View as="section" display="block" margin="0 0 large" key={b.id}>
