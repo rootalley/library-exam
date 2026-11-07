@@ -1,8 +1,18 @@
 // Course Materials and Readings: a list the instructor can add to and remove from
 import { useEffect, useRef } from 'react'
-import { View, Flex, Text, Button, IconButton, TextInput, Spinner, ScreenReaderContent } from '@instructure/ui'
+import { View, Flex, Text, Button, IconButton, TextInput, Pill, Spinner, ScreenReaderContent } from '@instructure/ui'
 import { IconAddLine, IconTrashLine } from '@instructure/ui-icons'
 import { detect, find, findByText } from './lookup.js'
+
+// a finished citation: authors, the title in italics, then the publication details
+export function Citation({ entry }) {
+  return (
+    <span>
+      {entry.authors && `${entry.authors}. `}<i>{entry.title}</i>. {entry.detail}{' '}
+      <span style={{ color: '#556572' }}>{entry.id}</span>
+    </span>
+  )
+}
 
 // read-only list, for the editor when nobody is editing and later for students
 export function ListView({ items, empty }) {
@@ -55,7 +65,13 @@ function Row({ block, item, index, dispatch }) {
           <Flex.Item><Text size="small" color="secondary">Looking up {source || 'your entry'}…</Text></Flex.Item>
         </Flex>
       )}
-      {item.entry && <div>{item.entry.title}</div>}
+      {item.entry && (
+        <View as="div" margin="x-small 0 0" padding="x-small small" background="secondary" borderRadius="small">
+          <Pill color="success" margin="0 x-small 0 0">{item.entry.kind}</Pill>
+          <Text size="small"><Citation entry={item.entry} /></Text>
+          <View as="div" margin="xx-small 0 0"><Text size="small" color="secondary">Details filled in from {item.entry.source ? `the ${item.entry.source}` : 'the match'}. Change the line to look up something else.</Text></View>
+        </View>
+      )}
     </div>
   )
 }
