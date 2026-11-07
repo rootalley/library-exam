@@ -1,0 +1,50 @@
+[
+ {
+  "label": "Home",
+  "hidden": false
+ },
+ {
+  "label": "Announcements",
+  "hidden": true
+ },
+ {
+  "label": "Syllabus",
+  "hidden": false
+ },
+ {
+  "label": "Assignments",
+  "hidden": true
+ },
+ {
+  "label": "Discussions",
+  "hidden": false
+ },
+ {
+  "label": "Grades",
+  "hidden": false
+ },
+ {
+  "label": "People",
+  "hidden": false
+ },
+ {
+  "label": "Pages",
+  "hidden": true
+ },
+ {
+  "label": "Files",
+  "hidden": true
+ },
+ {
+  "label": "Quizzes",
+  "hidden": true
+ },
+ {
+  "label": "Modules",
+  "hidden": true
+ },
+ {
+  "label": "Settings",
+  "hidden": false
+ }
+]

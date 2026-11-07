@@ -1,6 +1,7 @@
 // canvas chrome: global nav, course header, course nav
 import { IconArrowOpenEndSolid, IconHamburgerLine, IconOffLine, IconStudentViewLine, IconEducatorsLine } from '@instructure/ui-icons'
 import { images } from './themes.js'
+import courseNav from './brands/course_nav.json'
 import { useSyllabus } from './syllabus/state.jsx'
 
 const FONT = 'Lato, "Lato Extended", "Helvetica Neue", Helvetica, Arial, sans-serif'
@@ -73,21 +74,7 @@ export function CourseHeader({ course, page, view, onToggleView, linkColor }) {
 }
 
 // the links in the course menu on the left
-// hidden ones are links students can't see, they get the eye icon
-const courseLinks = [
-  { label: 'Home', hidden: false },
-  { label: 'Announcements', hidden: true },
-  { label: 'Syllabus', hidden: false },
-  { label: 'Assignments', hidden: true },
-  { label: 'Discussions', hidden: false },
-  { label: 'Grades', hidden: false },
-  { label: 'People', hidden: false },
-  { label: 'Pages', hidden: true },
-  { label: 'Files', hidden: true },
-  { label: 'Quizzes', hidden: true },
-  { label: 'Modules', hidden: true },
-  { label: 'Settings', hidden: false },
-]
+// the course links and which ones are hidden from students (those get the eye icon) live in a json file
 
 export function CourseNav({ active, view, linkColor, term }) {
   const { state } = useSyllabus()
@@ -95,7 +82,7 @@ export function CourseNav({ active, view, linkColor, term }) {
   // the Syllabus link counts as hidden from students until the instructor publishes
   const hidden = (t) => t.hidden || (t.label === 'Syllabus' && !state.published)
   // students don't get the hidden links, and they don't get Settings
-  const items = courseLinks.filter((t) => !(student && ((hidden(t) && t.label !== 'Syllabus') || t.label === 'Settings')))
+  const items = courseNav.filter((t) => !(student && ((hidden(t) && t.label !== 'Syllabus') || t.label === 'Settings')))
 
   return (
     <nav aria-label="Courses Navigation Menu" style={{ width: 156, flex: 'none', margin: '24px 0 0 24px', fontFamily: FONT }}>
