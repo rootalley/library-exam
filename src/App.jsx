@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { View, Heading, Text } from '@instructure/ui'
 import { course } from './data.js'
 import { GlobalNav, CourseHeader, CourseNav } from './canvas.jsx'
@@ -9,6 +10,8 @@ import { SyllabusScreen } from './syllabus/index.jsx'
 const brand = brands.gt
 
 export default function App() {
+  // teacher is the editor, student is what published pages look like
+  const [view, setView] = useState('teacher')
   const linkColor = brand.vars['ic-link-color']
 
   return (
@@ -27,13 +30,14 @@ export default function App() {
 
         {/* everything to the right of the global nav */}
         <div style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>
-          <CourseHeader course={course} page="Syllabus" linkColor={linkColor} />
+          <CourseHeader course={course} page="Syllabus" view={view} linkColor={linkColor}
+            onToggleView={() => setView(view === 'teacher' ? 'student' : 'teacher')} />
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             {/* course nav goes here */}
             <CourseNav active="Syllabus" linkColor={linkColor} term={course.term} />
             {/* main panel goes here */}
             <View as="main" display="block" padding="large medium" style={{ flex: 1, minWidth: 0, maxWidth: '72rem' }}>
-              <SyllabusScreen heading={<Heading level="h1" margin="0 0 medium">Syllabus</Heading>} />
+              <SyllabusScreen view={view} heading={<Heading level="h1" margin="0 0 medium">Syllabus</Heading>} />
             </View>
           </div>
         </div>

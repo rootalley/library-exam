@@ -1,5 +1,5 @@
 // canvas chrome: global nav, course header, course nav
-import { IconArrowOpenEndSolid, IconHamburgerLine, IconOffLine } from '@instructure/ui-icons'
+import { IconArrowOpenEndSolid, IconHamburgerLine, IconOffLine, IconStudentViewLine, IconEducatorsLine } from '@instructure/ui-icons'
 import { images } from './themes.js'
 
 const FONT = 'Lato, "Lato Extended", "Helvetica Neue", Helvetica, Arial, sans-serif'
@@ -46,7 +46,10 @@ export function GlobalNav({ brand, active = 'Courses' }) {
 }
 
 // the bar under the global nav: course code, an arrow, and the page name
-export function CourseHeader({ course, page, linkColor }) {
+export function CourseHeader({ course, page, view, onToggleView, linkColor }) {
+  const student = view === 'student'
+  const Icon = student ? IconEducatorsLine : IconStudentViewLine
+
   return (
     <header style={{ height: 72, margin: '0 24px', borderBottom: '1px solid #c7cdd1', display: 'flex', alignItems: 'center', fontFamily: FONT, color: '#000' }}>
       {/* the menu button, it doesn't do anything in the prototype */}
@@ -58,6 +61,12 @@ export function CourseHeader({ course, page, linkColor }) {
         <IconArrowOpenEndSolid style={{ fontSize: 12 }} />
         <span>{page}</span>
       </span>
+      <span style={{ flex: 1 }} />
+      {/* switches between what the instructor sees and what a student sees */}
+      <button type="button" onClick={onToggleView} style={{ font: `400 16px/22px ${FONT}`, color: '#273540', background: '#f2f4f4', border: '1px solid #e8eaec', borderRadius: 4, padding: '8px 14px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+        <Icon style={{ fontSize: 16 }} />
+        {student ? 'View as Teacher' : 'View as Student'}
+      </button>
     </header>
   )
 }

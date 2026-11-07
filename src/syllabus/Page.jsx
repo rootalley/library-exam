@@ -18,7 +18,7 @@ export const hasContent = (b) => {
   return true
 }
 
-export function SyllabusPage({ blocks: allBlocks }) {
+export function SyllabusPage({ blocks: allBlocks, heading }) {
   const blocks = allBlocks.filter(hasContent)
   const grading = blocks.filter((b) => b.kind === 'grading').flatMap((b) => b.rows).filter((r) => r.category || r.weight)
   // the exam dates in the box come from the course summary, they are the quizzes
@@ -26,6 +26,7 @@ export function SyllabusPage({ blocks: allBlocks }) {
 
   return (
     <div>
+      {heading}
       <JumpLinks items={blocks.map((b) => b.title)} />
       <Summary grading={grading} exams={exams} />
       {blocks.map((b) => (

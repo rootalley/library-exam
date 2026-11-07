@@ -2,8 +2,10 @@ import { Fragment } from 'react'
 import { IconArrowOpenEndSolid } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
 import { Start } from './Start.jsx'
+import { Alert } from '@instructure/ui'
 import { Editor } from './Editor.jsx'
 import { Preview } from './Preview.jsx'
+import { SyllabusPage } from './Page.jsx'
 
 const STEPS = [['start', 'Start'], ['edit', 'Edit and review'], ['preview', 'Preview and publish']]
 
@@ -39,8 +41,16 @@ function Steps({ current }) {
   )
 }
 
-export function SyllabusScreen({ heading }) {
+export function SyllabusScreen({ view, heading }) {
   const { state } = useSyllabus()
+
+  // students only see the page once the instructor has published it
+  if (view === 'student') {
+    return state.published
+      ? <SyllabusPage blocks={state.blocks} heading={heading} />
+      : <div>{heading}<Alert variant="info" renderCloseButtonLabel={null}>The instructor hasn't published a syllabus for this course yet.</Alert></div>
+  }
+
   // which step is highlighted in the breadcrumb
   const current = { start: 0, edit: 1, preview: 2 }[state.phase]
 
