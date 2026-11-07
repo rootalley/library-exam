@@ -27,6 +27,9 @@ export default function App({ brand }) {
       <div style={{ background: '#d04a02', color: '#fff', textAlign: 'center', padding: '3px 12px', flex: 'none' }}>
         <Text size="small" weight="bold" color="primary-inverse">
           Prototype for CS 6750 evaluation. Not real Canvas. Sample data only.
+          {/* reloading the page clears everything back to the start screen */}
+          <a href="#" onClick={(e) => { e.preventDefault(); window.location.reload() }}
+            style={{ marginLeft: '5rem', color: 'inherit', textDecoration: 'underline' }}>Restart</a>
         </Text>
       </div>
 
