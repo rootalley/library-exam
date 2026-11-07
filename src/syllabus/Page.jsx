@@ -8,6 +8,7 @@ import { slug } from './state.jsx'
 import { ContactCard, contactEmpty } from './Contact.jsx'
 import { CourseSummaryTable } from './CourseSummary.jsx'
 import { ListView } from './List.jsx'
+import { ImmersiveReaderButton } from './ImmersiveReader.jsx'
 
 // students never see a block the instructor left empty
 export const hasContent = (b) => {
@@ -38,6 +39,7 @@ export function SyllabusPage({ blocks: allBlocks, heading }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
               <div>{heading}</div>
               <div style={{ display: 'flex', gap: 8, marginTop: 8, flex: 'none' }}>
+                <ImmersiveReaderButton blocks={blocks} />
                 <Button renderIcon={IconDownloadLine} onClick={() => setNote(true)}>Export to PDF</Button>
               </div>
             </div>
