@@ -34,7 +34,7 @@ export default function App() {
             onToggleView={() => setView(view === 'teacher' ? 'student' : 'teacher')} />
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             {/* course nav goes here */}
-            <CourseNav active="Syllabus" linkColor={linkColor} term={course.term} />
+            <CourseNav active="Syllabus" view={view} linkColor={linkColor} term={course.term} />
             {/* main panel goes here */}
             <View as="main" display="block" padding="large medium" style={{ flex: 1, minWidth: 0, maxWidth: '72rem' }}>
               <SyllabusScreen view={view} heading={<Heading level="h1" margin="0 0 medium">Syllabus</Heading>} />

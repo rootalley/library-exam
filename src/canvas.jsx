@@ -1,6 +1,7 @@
 // canvas chrome: global nav, course header, course nav
 import { IconArrowOpenEndSolid, IconHamburgerLine, IconOffLine, IconStudentViewLine, IconEducatorsLine } from '@instructure/ui-icons'
 import { images } from './themes.js'
+import { useSyllabus } from './syllabus/state.jsx'
 
 const FONT = 'Lato, "Lato Extended", "Helvetica Neue", Helvetica, Arial, sans-serif'
 
@@ -88,12 +89,19 @@ const courseLinks = [
   { label: 'Settings', hidden: false },
 ]
 
-export function CourseNav({ active, linkColor, term }) {
+export function CourseNav({ active, view, linkColor, term }) {
+  const { state } = useSyllabus()
+  const student = view === 'student'
+  // the Syllabus link counts as hidden from students until the instructor publishes
+  const hidden = (t) => t.hidden || (t.label === 'Syllabus' && !state.published)
+  // students don't get the hidden links, and they don't get Settings
+  const items = courseLinks.filter((t) => !(student && ((hidden(t) && t.label !== 'Syllabus') || t.label === 'Settings')))
+
   return (
     <nav aria-label="Courses Navigation Menu" style={{ width: 156, flex: 'none', margin: '24px 0 0 24px', fontFamily: FONT }}>
       {term && <div style={{ fontSize: 13, lineHeight: '18px', color: '#394b58', margin: '0 0 10px 6px' }}>{term}</div>}
       <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-        {courseLinks.map((t) => {
+        {items.map((t) => {
           const on = t.label === active
           return (
             <li key={t.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -101,7 +109,7 @@ export function CourseNav({ active, linkColor, term }) {
                 style={{ flex: 1, padding: '8px 0 8px 4px', borderLeft: `2px solid ${on ? '#273540' : 'transparent'}`, fontSize: 16, lineHeight: '20.8px', fontWeight: on ? 700 : 400, color: on ? '#273540' : linkColor, textDecoration: 'none' }}>
                 {t.label}
               </a>
-              {t.hidden && <IconOffLine style={{ fontSize: 16, color: '#556572' }} title="Not visible to students" />}
+              {!student && hidden(t) && <IconOffLine style={{ fontSize: 16, color: '#556572' }} title="Not visible to students" />}
             </li>
           )
         })}
