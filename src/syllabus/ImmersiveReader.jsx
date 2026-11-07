@@ -87,6 +87,15 @@ function Reader({ blocks, onClose }) {
     return () => { done = true; clearTimeout(safety); if (synth) synth.cancel() }
   }, [reading, idx, sentenceList])
 
+  // keeps the sentence being read in the middle of the screen
+  // Element.scrollIntoView with block center and smooth: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+  useEffect(() => {
+    if (reading && idx >= 0) {
+      const el = document.getElementById(`ir-s-${idx}`)
+      if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    }
+  }, [idx, reading])
+
   // closing the reader stops the voice
   useEffect(() => () => { if (window.speechSynthesis) window.speechSynthesis.cancel() }, [])
 
