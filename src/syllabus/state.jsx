@@ -127,8 +127,22 @@ export function reducer(s, a) {
   }
 }
 
+// ?scene=... jumps straight to a state so a screenshot or a demo doesn't need all the clicks
+// each scene is a list of the actions that get there, they build on each other
+const scenes = {
+  imported: [{ type: 'import', source: 'word' }],
+  blank: [{ type: 'blank' }],
+}
+scenes.reviewed = [...scenes.imported, { type: 'shiftDates' }, { type: 'resolveFlag', id: 'f-term', replace: true }, { type: 'resolveFlag', id: 'f-room' }, { type: 'resolveFlag', id: 'f-ta' }, { type: 'insertStatement', id: 'accommodations' }]
+scenes.preview = [...scenes.reviewed, { type: 'phase', phase: 'preview' }]
+scenes.published = [...scenes.preview, { type: 'publish' }]
+scenes.startagain = [...scenes.blank, { type: 'phase', phase: 'start' }]
+
 export function SyllabusProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, initial)
+  // URLSearchParams docs: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
+  const scene = new URLSearchParams(window.location.search).get('scene')
+  // the third argument runs once and gives the starting state, so the scene's actions are applied before the first render
+  const [state, dispatch] = useReducer(reducer, initial, (i) => (scenes[scene] || []).reduce(reducer, i))
   return <Ctx.Provider value={{ state, dispatch }}>{children}</Ctx.Provider>
 }
 

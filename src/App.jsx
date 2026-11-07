@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { View, Heading, Text } from '@instructure/ui'
 import { course } from './data.js'
 import { GlobalNav, CourseHeader, CourseNav } from './canvas.jsx'
@@ -7,9 +7,17 @@ import { SyllabusProvider } from './syllabus/state.jsx'
 import { SyllabusScreen } from './syllabus/index.jsx'
 
 export default function App({ brand }) {
-  // teacher is the editor, student is what published pages look like
-  const [view, setView] = useState('teacher')
+  const params = new URLSearchParams(window.location.search)
+  // teacher is the editor, student is what published pages look like, ?view=student starts in student view
+  const [view, setView] = useState(params.get('view') === 'student' ? 'student' : 'teacher')
+  const scroller = useRef(null)
   const linkColor = brand.vars['ic-link-color']
+
+  // ?scrolltest=400 scrolls the page on load, for checking the frozen student header in a screenshot
+  useEffect(() => {
+    const y = Number(params.get('scrolltest'))
+    if (y && scroller.current) scroller.current.scrollTop = y
+  }, [])
 
   return (
     <BrandCtx.Provider value={brand}>
@@ -27,7 +35,7 @@ export default function App({ brand }) {
         <GlobalNav brand={brand} />
 
         {/* everything to the right of the global nav */}
-        <div style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>
+        <div ref={scroller} style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>
           <CourseHeader course={course} page="Syllabus" view={view} linkColor={linkColor}
             onToggleView={() => setView(view === 'teacher' ? 'student' : 'teacher')} />
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
