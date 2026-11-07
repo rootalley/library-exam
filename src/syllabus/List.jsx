@@ -40,7 +40,6 @@ function Row({ block, item, index, dispatch }) {
     const det = detect(text)
     if (!text || (!det && !force)) return
     if (item.entry || item.status === 'looking' || item.status === 'accepted' || item.status === 'notfound') return
-    console.log('looking up', text)
     dispatch({ type: 'setListEntry', id: block.id, index, input: item.input, entry: null, status: 'looking' })
     // 1.2 seconds of fake waiting so it feels like a real lookup
     timer.current = setTimeout(() => {
