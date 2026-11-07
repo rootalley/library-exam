@@ -44,3 +44,6 @@ export function resolved(input) {
   const entry = det && find(det)
   return entry ? { input, entry, status: 'done' } : { input, entry: null, status: 'idle' }
 }
+
+// plain text version of a list item, for the Immersive Reader
+export const describe = (it) => (it.entry ? [it.entry.authors, it.entry.title, it.entry.detail].filter(Boolean).join('. ').replace(/\.\./g, '.') : it.input)
