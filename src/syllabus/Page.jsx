@@ -1,5 +1,7 @@
 // the finished syllabus page: what students see, and what the instructor previews
-import { View, Heading, Text } from '@instructure/ui'
+import { useState } from 'react'
+import { View, Heading, Text, Button, Alert } from '@instructure/ui'
+import { IconDownloadLine } from '@instructure/ui-icons'
 import { course } from '../data.js'
 import { JumpLinks, Summary } from '../shared.jsx'
 import { slug } from './state.jsx'
@@ -20,6 +22,8 @@ export const hasContent = (b) => {
 
 export function SyllabusPage({ blocks: allBlocks, heading }) {
   const blocks = allBlocks.filter(hasContent)
+  // the note after Export to PDF, nothing really downloads in the prototype
+  const [note, setNote] = useState(false)
   const grading = blocks.filter((b) => b.kind === 'grading').flatMap((b) => b.rows).filter((r) => r.category || r.weight)
   // the exam dates in the box come from the course summary, they are the quizzes
   const exams = blocks.filter((b) => b.kind === 'coursesummary').flatMap((b) => b.rows).filter((r) => r.type === 'quiz')
@@ -29,10 +33,18 @@ export function SyllabusPage({ blocks: allBlocks, heading }) {
       {heading ? (
         // the title and jump links stay put while the syllabus scrolls under them
         // zIndex 2 keeps the frozen header above the blocks, how z-index stacks things is on MDN: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/z-index
-        <div style={{ position: 'sticky', top: 0, zIndex: 2, background: '#fff', padding: '12px 0 8px', marginTop: -12, borderBottom: '1px solid #e8eaec' }}>
-          <div>{heading}</div>
-          <JumpLinks items={blocks.map((b) => b.title)} margin="0" />
-        </div>
+        <>
+          <div style={{ position: 'sticky', top: 0, zIndex: 2, background: '#fff', padding: '12px 0 8px', marginTop: -12, borderBottom: '1px solid #e8eaec' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
+              <div>{heading}</div>
+              <div style={{ display: 'flex', gap: 8, marginTop: 8, flex: 'none' }}>
+                <Button renderIcon={IconDownloadLine} onClick={() => setNote(true)}>Export to PDF</Button>
+              </div>
+            </div>
+            <JumpLinks items={blocks.map((b) => b.title)} margin="0" />
+          </div>
+          {note && <Alert variant="info" margin="small 0 0" timeout={4000} renderCloseButtonLabel="Close" onDismiss={() => setNote(false)}>Prototype: a PDF of the syllabus would download now.</Alert>}
+        </>
       ) : (
         <JumpLinks items={blocks.map((b) => b.title)} />
       )}
