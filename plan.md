@@ -21,15 +21,15 @@ I'll build it a little at a time and commit after every piece. Started with plai
 - [x] list of blocks with edit, done, cancel, move up/down, remove, add a block
 - [ ] block types: text, instructor info, learning objectives, grading scheme, course summary, materials and readings, policies
   - [x] done so far: text, instructor info, learning objectives, grading scheme, course summary, policies
-  - [ ] still to do: materials and readings
+  - [x] materials and readings too
 - [x] review panel: move all dates, details to check, required statements
 - [x] fake file chooser, spinner, course chooser
 
 ## preview and student view
-- [ ] preview page and publish button
-- [ ] view as student button in the course header
-- [ ] jump links and the at a glance box
-- [ ] isbn / doi lookup for materials and readings
+- [x] preview page and publish button
+- [x] view as student button in the course header
+- [x] jump links and the at a glance box
+- [x] isbn / doi lookup for materials and readings
 - [ ] immersive reader (read aloud, text size, color themes)
 
 ## last
