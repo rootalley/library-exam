@@ -1,7 +1,7 @@
 // the Immersive Reader for the syllabus page. Canvas has a real one, this copies the parts the prototype shows
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { View, Flex, Text, Button, IconButton, Modal } from '@instructure/ui'
-import { IconImmersiveReaderLine, IconArrowOpenStartLine, IconPlayLine, IconPauseLine } from '@instructure/ui-icons'
+import { IconImmersiveReaderLine, IconArrowOpenStartLine, IconPlayLine, IconPauseLine, IconLineReaderLine } from '@instructure/ui-icons'
 import { course } from '../data.js'
 import { CONTACT_ROWS, filled } from './Contact.jsx'
 import { describe } from './lookup.js'
@@ -66,7 +66,12 @@ function Reader({ blocks, onClose }) {
   const [size, setSize] = useState(24)
   const [wide, setWide] = useState(false)
   const [theme, setTheme] = useState('light')
+  // line focus dims everything except a band that follows the mouse, y is the mouse position inside the text
+  const [focus, setFocus] = useState(false)
+  const [y, setY] = useState(260)
+  const wrap = useRef(null)
   const t = THEMES[theme]
+  const band = size * 3.2
   // a toggle button looks pressed while its setting is on
   const btn = (on) => ({ color: on ? 'primary' : 'secondary', 'aria-pressed': on })
 
@@ -132,11 +137,13 @@ function Reader({ blocks, onClose }) {
           {Object.entries(THEMES).map(([k, th]) => (
             <Flex.Item key={k}><Button size="small" {...btn(theme === k)} onClick={() => setTheme(k)}>{th.name}</Button></Flex.Item>
           ))}
+          <Flex.Item><Button size="small" renderIcon={IconLineReaderLine} {...btn(focus)} onClick={() => setFocus(!focus)}>Line focus</Button></Flex.Item>
         </Flex>
       </Modal.Header>
       <Modal.Body padding="none">
         <div style={{ height: 'calc(100vh - 150px)', overflowY: 'auto', background: t.bg, color: t.fg }}>
-          <div style={{ position: 'relative', maxWidth: '46rem', margin: '0 auto', padding: '32px 24px 64px', fontSize: size, lineHeight: wide ? 1.9 : 1.5, letterSpacing: wide ? '0.08em' : 'normal', wordSpacing: wide ? '0.25em' : 'normal' }}>
+          <div ref={wrap} style={{ position: 'relative', maxWidth: '46rem', margin: '0 auto', padding: '32px 24px 64px', fontSize: size, lineHeight: wide ? 1.9 : 1.5, letterSpacing: wide ? '0.08em' : 'normal', wordSpacing: wide ? '0.25em' : 'normal' }}
+            onMouseMove={(e) => { if (focus && wrap.current) setY(e.clientY - wrap.current.getBoundingClientRect().top) }}>
             {flat.map((p, pi) => {
               const style = p.type === 'h' ? { fontSize: '1.35em', fontWeight: 700, margin: '1.4em 0 0.3em' } : p.type === 'h3' ? { fontWeight: 700, margin: '0.8em 0 0.2em' } : { margin: '0 0 0.7em' }
               return (
@@ -146,6 +153,12 @@ function Reader({ blocks, onClose }) {
               )
             })}
             <View as="div" margin="large 0 0"><Text size="small" color="secondary">Prototype: this emulation reads aloud with a moving highlight and offers text size, spacing, themes, and line focus. The real Immersive Reader also has grammar tools, a picture dictionary, and translation.</Text></View>
+            {focus && (
+              <>
+                <div style={{ position: 'absolute', left: 0, right: 0, top: 0, height: Math.max(0, y - band / 2), background: 'rgba(0,0,0,0.62)', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', left: 0, right: 0, top: y + band / 2, bottom: 0, background: 'rgba(0,0,0,0.62)', pointerEvents: 'none' }} />
+              </>
+            )}
           </div>
         </div>
       </Modal.Body>
