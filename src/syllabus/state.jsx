@@ -9,7 +9,7 @@ const Ctx = createContext(null)
 export const useSyllabus = () => useContext(Ctx)
 
 // phase is which of the three steps we are on: start, edit or preview
-const initial = { phase: 'start', blocks: [], source: null, flags: [], datesShifted: false, dateLog: [], log: [], nextId: 1 }
+const initial = { phase: 'start', blocks: [], source: null, flags: [], published: false, datesShifted: false, dateLog: [], log: [], nextId: 1 }
 
 // changes one block, leaves the others alone
 const updateBlock = (s, id, fn) => ({ ...s, blocks: s.blocks.map((b) => (b.id === id ? fn(b) : b)) })
@@ -118,6 +118,8 @@ export function reducer(s, a) {
       const b = s.blocks.find((x) => x.id === a.id)
       return { ...updateBlock(s, a.id, (x) => ({ ...x, enabled: !x.enabled })), log: [...s.log, `${b.enabled ? 'Turned off' : 'Turned on'} ${b.title}`] }
     }
+    case 'publish':
+      return { ...s, published: true, log: [...s.log, 'Published to Canvas'] }
     case 'phase':
       return { ...s, phase: a.phase }
     default:
