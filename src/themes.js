@@ -1,10 +1,15 @@
+import { canvas } from '@instructure/ui'
+import duSeal from './assets/du_seal.svg'
 import gtLogo from './assets/gt_logo.png'
 import avatar from './assets/avatar-50.png'
+import commons from './assets/commons.png'
 import myMedia from './assets/my_media.png'
+import duNav from './brands/du.json'
 import gtNav from './brands/gt.json'
 
-// brand colors copied from devtools on the live canvas page (css custom properties on the dashboard)
-export const brands = {
+// brand colors copied from devtools on each school's live canvas dashboard (css custom properties)
+// the nav icons are the live canvas svgs too, the logos are used with permission
+const brands = {
   gt: {
     name: 'gt',
     logo: gtLogo,
@@ -23,6 +28,36 @@ export const brands = {
       'proto-nav-active-icon': '#857437',
     },
   },
+  du: {
+    name: 'du',
+    logo: duSeal,
+    nav: duNav,
+    vars: {
+      'ic-brand-primary': '#1f3c6c',
+      'ic-brand-global-nav-bgd': '#1f3c6c',
+      'ic-brand-global-nav-ic-icon-svg-fill': '#ffffff',
+      'ic-brand-global-nav-menu-item__text-color': '#ffffff',
+      'ic-brand-global-nav-avatar-border': '#ffffff',
+      'ic-link-color': '#147EB3',
+      'ic-brand-button--primary-bgd': '#1f3c6c',
+      'ic-brand-button--primary-text': '#ffffff',
+      'ic-brand-font-color-dark': '#000000',
+      'proto-nav-active-text': '#000000',
+      'proto-nav-active-icon': '#1f3c6c',
+    },
+  },
 }
 
-export const images = { avatar, my_media: myMedia }
+export const images = { avatar, commons, my_media: myMedia }
+
+// ?theme=gt or ?theme=du picks the school, gt is the default for now
+// URLSearchParams docs: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
+export function brandFromUrl() {
+  const name = new URLSearchParams(window.location.search).get('theme')
+  return brands[name] || brands.gt
+}
+
+// the instui theme is the canvas theme with the school's colors on top
+export function instuiTheme(brand) {
+  return { ...canvas, ...brand.vars }
+}

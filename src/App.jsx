@@ -2,14 +2,10 @@ import { useState } from 'react'
 import { View, Heading, Text } from '@instructure/ui'
 import { course } from './data.js'
 import { GlobalNav, CourseHeader, CourseNav } from './canvas.jsx'
-import { brands } from './themes.js'
 import { SyllabusProvider } from './syllabus/state.jsx'
 import { SyllabusScreen } from './syllabus/index.jsx'
 
-// only the gt theme for now
-const brand = brands.gt
-
-export default function App() {
+export default function App({ brand }) {
   // teacher is the editor, student is what published pages look like
   const [view, setView] = useState('teacher')
   const linkColor = brand.vars['ic-link-color']
