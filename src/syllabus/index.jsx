@@ -3,6 +3,7 @@ import { IconArrowOpenEndSolid } from '@instructure/ui-icons'
 import { useSyllabus } from './state.jsx'
 import { Start } from './Start.jsx'
 import { Editor } from './Editor.jsx'
+import { Preview } from './Preview.jsx'
 
 const STEPS = [['start', 'Start'], ['edit', 'Edit and review'], ['preview', 'Preview and publish']]
 
@@ -49,7 +50,7 @@ export function SyllabusScreen({ heading }) {
       <Steps current={current} />
       {state.phase === 'start' && <Start />}
       {state.phase === 'edit' && <Editor />}
-      {/* preview goes here */}
+      {state.phase === 'preview' && <Preview />}
     </div>
   )
 }
