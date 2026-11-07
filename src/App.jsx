@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { View, Heading, Text } from '@instructure/ui'
 import { course } from './data.js'
 import { GlobalNav, CourseHeader, CourseNav } from './canvas.jsx'
+import { BrandCtx } from './brandContext.js'
 import { SyllabusProvider } from './syllabus/state.jsx'
 import { SyllabusScreen } from './syllabus/index.jsx'
 
@@ -11,6 +12,7 @@ export default function App({ brand }) {
   const linkColor = brand.vars['ic-link-color']
 
   return (
+    <BrandCtx.Provider value={brand}>
     <SyllabusProvider>
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {/* the plain div had a serif font, the InstUI Text component brings the canvas font */}
@@ -40,5 +42,6 @@ export default function App({ brand }) {
       </div>
     </div>
     </SyllabusProvider>
+    </BrandCtx.Provider>
   )
 }

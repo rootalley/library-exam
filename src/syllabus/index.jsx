@@ -1,5 +1,6 @@
-import { Fragment } from 'react'
+import { Fragment, useContext } from 'react'
 import { IconArrowOpenEndSolid } from '@instructure/ui-icons'
+import { BrandCtx } from '../brandContext.js'
 import { useSyllabus } from './state.jsx'
 import { Start } from './Start.jsx'
 import { Alert } from '@instructure/ui'
@@ -11,9 +12,12 @@ const STEPS = [['start', 'Start'], ['edit', 'Edit and review'], ['preview', 'Pre
 
 // numbered breadcrumbs across the top: Start > Edit and review > Preview and publish
 // click a step to jump to it, steps 2 and 3 need a syllabus to exist first
-// colors are hard coded to the gt theme for now
+// the circles and links use the school's colors
 function Steps({ current }) {
   const { state, dispatch } = useSyllabus()
+  const brand = useContext(BrandCtx)
+  const accent = (brand && brand.vars['ic-brand-primary']) || '#0374b5'
+  const link = (brand && brand.vars['ic-link-color']) || '#0374b5'
   const hasSyllabus = state.blocks.length > 0
 
   return (
@@ -23,8 +27,8 @@ function Steps({ current }) {
         const here = i === current
         const body = (
           <>
-            <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: '50%', background: enabled ? '#857437' : '#8d959f', color: '#fff', fontWeight: 700, fontSize: 16 }}>{i + 1}</span>
-            <span style={{ fontWeight: here ? 700 : 400, color: !enabled ? '#6b7780' : here ? '#273540' : '#004F9F' }}>{name}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: '50%', background: enabled ? accent : '#8d959f', color: '#fff', fontWeight: 700, fontSize: 16 }}>{i + 1}</span>
+            <span style={{ fontWeight: here ? 700 : 400, color: !enabled ? '#6b7780' : here ? '#273540' : link }}>{name}</span>
           </>
         )
         const common = { display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none' }
