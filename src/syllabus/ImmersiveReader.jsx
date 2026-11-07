@@ -67,7 +67,7 @@ function Reader({ blocks, onClose }) {
   const [wide, setWide] = useState(false)
   const [theme, setTheme] = useState('light')
   // line focus dims everything except a band that follows the mouse, y is the mouse position inside the text
-  const [focus, setFocus] = useState(false)
+  const [focus, setFocus] = useState(q('focus') === '1')
   const [y, setY] = useState(260)
   const wrap = useRef(null)
   const t = THEMES[theme]
@@ -75,9 +75,10 @@ function Reader({ blocks, onClose }) {
   // a toggle button looks pressed while its setting is on
   const btn = (on) => ({ color: on ? 'primary' : 'secondary', 'aria-pressed': on })
 
-  const [reading, setReading] = useState(false)
+  // ?read=1 starts reading on load and ?focus=1 turns line focus on, for demos and screenshots
+  const [reading, setReading] = useState(q('read') === '1')
   // idx is the sentence being read, -1 when nothing is
-  const [idx, setIdx] = useState(-1)
+  const [idx, setIdx] = useState(q('read') === '1' ? 0 : -1)
 
   // reads one sentence at a time and moves the highlight along
   // speechSynthesis.speak and the utterance end event: https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis
@@ -168,7 +169,8 @@ function Reader({ blocks, onClose }) {
 
 // the button that opens the reader, it goes next to the export buttons
 export function ImmersiveReaderButton({ blocks, margin }) {
-  const [open, setOpen] = useState(false)
+  // ?reader=1 opens the reader on load, for demos and screenshots
+  const [open, setOpen] = useState(() => new URLSearchParams(window.location.search).get('reader') === '1')
 
   return (
     <>

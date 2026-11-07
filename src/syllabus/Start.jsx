@@ -114,7 +114,8 @@ function Working({ title, steps, onDone }) {
 export function Start() {
   const { state, dispatch } = useSyllabus()
   // which dialog is open: idle means none
-  const [stage, setStage] = useState('idle')
+  // ?dialog=file, course or scanning opens a dialog on load, for demos and screenshots
+  const [stage, setStage] = useState(() => new URLSearchParams(window.location.search).get('dialog') || 'idle')
   // the course picked in the dialog, the spinner message uses it
   const [picked, setPicked] = useState(COURSES[0])
 

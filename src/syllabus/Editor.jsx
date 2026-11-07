@@ -102,7 +102,8 @@ function Objectives({ block, editing, dispatch }) {
 // one block: the title, an Edit button, and the text
 function Block({ block, index, count, flags }) {
   const { dispatch } = useSyllabus()
-  const [editing, setEditing] = useState(false)
+  // ?edit=instructor opens that block for editing on load, for demos and screenshots
+  const [editing, setEditing] = useState(() => new URLSearchParams(window.location.search).get('edit') === block.id)
   // the block as it was when editing started, so Cancel can put it back. useRef docs: https://react.dev/reference/react/useRef
   const summary = block.kind === 'coursesummary'
   const policies = block.kind === 'policies'
