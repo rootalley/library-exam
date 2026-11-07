@@ -128,7 +128,7 @@ export function SyllabusProvider({ children }) {
 }
 
 // all the text a block holds, so a flag can find its detail whatever kind of block it is
-export const blockText = (b) => (b.kind === 'text' ? b.text : b.kind === 'contact' ? Object.values(b.fields).join('\n') : b.kind === 'objectives' ? [b.lead, ...b.items].join('\n') : '')
+export const blockText = (b) => (b.kind === 'text' ? b.text : b.kind === 'contact' ? Object.values(b.fields).join('\n') : b.kind === 'objectives' ? [b.lead, ...b.items].join('\n') : b.kind === 'list' ? b.items.map((x) => x.input).join('\n') : '')
 
 // flags that are still open and whose text is still in the syllabus
 export const activeFlags = (s) => s.flags.filter((f) => !f.resolved && s.blocks.some((b) => b.id === f.blockId && blockText(b).includes(f.text)))

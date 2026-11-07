@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import { View, Flex, Text, Button, IconButton, TextInput, Pill, Spinner, ScreenReaderContent } from '@instructure/ui'
 import { IconAddLine, IconTrashLine } from '@instructure/ui-icons'
 import { detect, find, findByText } from './lookup.js'
+import { Marked } from './Marked.jsx'
 
 // a finished citation: authors, the title in italics, then the publication details
 export function Citation({ entry }) {
@@ -15,12 +16,12 @@ export function Citation({ entry }) {
 }
 
 // read-only list, for the editor when nobody is editing and later for students
-export function ListView({ items, empty }) {
+export function ListView({ items, flags = [], empty }) {
   const shown = items.filter((x) => x.input.trim())
   if (!shown.length) return empty ? <Text color="secondary" fontStyle="italic">{empty}</Text> : null
   return (
     <ul style={{ margin: '0 0 0 1.25rem', padding: 0 }}>
-      {shown.map((x, i) => <li key={i} style={{ marginBottom: 4 }}>{x.input}</li>)}
+      {shown.map((x, i) => <li key={i} style={{ marginBottom: 4 }}>{x.entry ? <Citation entry={x.entry} /> : <Marked text={x.input} flags={flags} />}</li>)}
     </ul>
   )
 }

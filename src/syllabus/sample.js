@@ -1,5 +1,6 @@
 // fake sample content for the prototype, no real names or data
 import { course } from '../data.js'
+import { resolved } from './lookup.js'
 
 const CATALOG_HINT = "Paste the description exactly as it appears in the university's course catalog."
 const CATALOG_PROMPT = "Paste the exact course description from the university's catalog."
@@ -88,6 +89,8 @@ export const importedBlocks = () => [
   { id: 'grading', kind: 'grading', title: 'Grading Scheme', rows: course.grading.map((g) => ({ ...g })),
     policy: 'Late homework loses 10% per day for up to three days. Letter grades follow the university scale.' },
   { id: 'meetings', kind: 'text', title: 'Class Meetings', text: `This is the ${TERM_OLD} section. It meets Tuesdays and Thursdays in Science Hall Room 214.` },
+  { id: 'materials', kind: 'list', title: 'Course Materials', tip: MATERIALS_TIP, items: [resolved('978-1-23456-789-7')] },
+  { id: 'readings', kind: 'list', title: 'Readings', tip: READINGS_TIP, items: [resolved('10.1000/xyz123'), resolved('10.1000/abc456')] },
   // the old file lacked the Accommodations statement, so the check finds it missing
   { id: 'policies', kind: 'policies', title: 'Policies', statementIds: ['integrity', 'support'] },
 ]

@@ -37,3 +37,10 @@ export function findByText(input) {
   const t = (input || '').toLowerCase()
   return Object.values(WORKS).find((w) => t.includes(w.title.toLowerCase())) || null
 }
+
+// a list item that is already looked up, for the sample syllabus
+export function resolved(input) {
+  const det = detect(input)
+  const entry = det && find(det)
+  return entry ? { input, entry, status: 'done' } : { input, entry: null, status: 'idle' }
+}

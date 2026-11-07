@@ -148,7 +148,12 @@ function Block({ block, index, count, flags }) {
       )}
       {block.kind === 'list' && (editing
         ? <ListEditor block={block} dispatch={dispatch} />
-        : <ListView items={block.items} empty="Nothing listed yet. Select Edit to add an item." />)}
+        : <ListView items={block.items} flags={flags.filter((f) => f.blockId === block.id)} empty="Nothing listed yet. Select Edit to add an item." />)}
+      {block.kind === 'list' && block.tip && (
+        <View as="div" margin="small 0 0" padding="x-small small" background="secondary" borderRadius="small">
+          <Text size="small"><Text size="small" weight="bold">Instructor tip: </Text>{block.tip}</Text>
+        </View>
+      )}
       {block.kind === 'grading' && <Rows block={block} editing={editing} dispatch={dispatch} />}
       {block.kind === 'objectives' && <Objectives block={block} editing={editing} dispatch={dispatch} />}
       {block.kind === 'contact' && (editing
