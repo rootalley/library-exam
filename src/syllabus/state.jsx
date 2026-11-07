@@ -2,6 +2,9 @@ import { createContext, useContext, useReducer } from 'react'
 import { course } from '../data.js'
 import { importedBlocks, importedFlags, item, starterBlocks, blockTypes, emptyContact, shiftRows, summaryRows2026, TERM_NEW, LEAD_IN, GRADING_POLICY_HINT } from './sample.js'
 
+// a heading's id on the page, so the jump links can find it
+export const slug = (s) => s.toLowerCase().replace(/\W+/g, '-')
+
 const Ctx = createContext(null)
 export const useSyllabus = () => useContext(Ctx)
 

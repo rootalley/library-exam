@@ -1,5 +1,5 @@
 // pieces the editor and the student page both use
-import { View, Flex, Text, Pill } from '@instructure/ui'
+import { View, Flex, Text, Link, Pill } from '@instructure/ui'
 import { IconLockLine } from '@instructure/ui-icons'
 
 // one required statement, grayed with a lock
@@ -14,6 +14,21 @@ export function LockedStatement({ title, text }) {
           <View as="div" margin="x-small 0 0"><Text>{text}</Text></View>
         </Flex.Item>
       </Flex>
+    </View>
+  )
+}
+
+// a "Jump to:" line with a link to each block heading
+export function JumpLinks({ items, margin = '0 0 medium' }) {
+  return (
+    <View as="nav" display="block" margin={margin} aria-label="Jump to a section">
+      <Text weight="bold">Jump to: </Text>
+      {items.map((it, i) => (
+        <span key={it}>
+          {i > 0 && ' \u00b7 '}
+          <Link href={'#' + it.toLowerCase().replace(/\W+/g, '-')}>{it}</Link>
+        </span>
+      ))}
     </View>
   )
 }

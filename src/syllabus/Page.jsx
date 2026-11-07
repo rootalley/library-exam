@@ -1,16 +1,32 @@
 // the finished syllabus page: what students see, and what the instructor previews
 import { View, Heading, Text } from '@instructure/ui'
 import { course } from '../data.js'
-import { ContactCard } from './Contact.jsx'
+import { JumpLinks } from '../shared.jsx'
+import { slug } from './state.jsx'
+import { ContactCard, contactEmpty } from './Contact.jsx'
 import { CourseSummaryTable } from './CourseSummary.jsx'
 import { ListView } from './List.jsx'
 
-export function SyllabusPage({ blocks }) {
+// students never see a block the instructor left empty
+export const hasContent = (b) => {
+  if (b.kind === 'coursesummary') return b.enabled && b.rows.length > 0
+  if (b.kind === 'text') return b.text.trim() !== ''
+  if (b.kind === 'contact') return !contactEmpty(b)
+  if (b.kind === 'objectives') return b.items.some((x) => x.trim())
+  if (b.kind === 'list') return b.items.some((x) => x.input.trim())
+  if (b.kind === 'grading') return b.rows.some((r) => r.category || r.weight) || !!b.policy
+  return true
+}
+
+export function SyllabusPage({ blocks: allBlocks }) {
+  const blocks = allBlocks.filter(hasContent)
+
   return (
     <div>
+      <JumpLinks items={blocks.map((b) => b.title)} />
       {blocks.map((b) => (
         <View as="section" display="block" margin="0 0 large" key={b.id}>
-          <Heading level="h2" margin="0 0 x-small">{b.title}</Heading>
+          <Heading level="h2" id={slug(b.title)} margin="0 0 x-small">{b.title}</Heading>
           {b.kind === 'text' && <Text as="p">{b.text}</Text>}
           {b.kind === 'list' && <ListView items={b.items} />}
           {b.kind === 'coursesummary' && <CourseSummaryTable rows={b.rows} />}
