@@ -27,8 +27,11 @@ export function ListView({ items, empty }) {
 
 function Row({ block, item, index, dispatch }) {
   const timer = useRef(null)
+  const field = useRef(null)
   // a pending lookup shouldn't fire after the row is gone, docs on cleanup in effects: https://react.dev/reference/react/useEffect
   useEffect(() => () => clearTimeout(timer.current), [])
+  // a row made by Add anyway starts with the cursor in it
+  useEffect(() => { if (item.focus && field.current) field.current.focus() }, [])
 
   // an ISBN, ISSN or DOI is looked up when the field loses focus or Enter is pressed
   // anything else is only looked up on Enter, force is true for that case
@@ -53,7 +56,7 @@ function Row({ block, item, index, dispatch }) {
     <div style={{ marginBottom: 12 }}>
       <Flex gap="small" alignItems="start">
         <Flex.Item shouldGrow>
-          <TextInput renderLabel={<ScreenReaderContent>{label}</ScreenReaderContent>} placeholder="A title or description, or an ISBN, ISSN, or DOI" value={item.input}
+          <TextInput inputRef={(el) => { field.current = el }} renderLabel={<ScreenReaderContent>{label}</ScreenReaderContent>} placeholder="A title or description, or an ISBN, ISSN, or DOI" value={item.input}
             onChange={(e, v) => dispatch({ type: 'editListItem', id: block.id, index, value: v })}
             onBlur={() => lookUp(false)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); lookUp(true) } }} />
         </Flex.Item>
@@ -64,6 +67,15 @@ function Row({ block, item, index, dispatch }) {
           <Flex.Item><Spinner renderTitle="Looking up" size="x-small" /></Flex.Item>
           <Flex.Item><Text size="small" color="secondary">Looking up {source || 'your entry'}…</Text></Flex.Item>
         </Flex>
+      )}
+      {item.status === 'notfound' && (
+        <Flex gap="small" alignItems="center" margin="x-small 0 0" wrap="wrap">
+          <Flex.Item><Text size="small" color="danger" aria-live="polite">&ldquo;{item.input.trim()}&rdquo; not found.</Text></Flex.Item>
+          <Flex.Item><Button size="small" onClick={() => dispatch({ type: 'acceptListItem', id: block.id, index, input: item.input })}>Add anyway?</Button></Flex.Item>
+        </Flex>
+      )}
+      {item.status === 'accepted' && (
+        <View as="div" margin="x-small 0 0"><Text size="small" color="secondary">Added as typed.</Text></View>
       )}
       {item.entry && (
         <View as="div" margin="x-small 0 0" padding="x-small small" background="secondary" borderRadius="small">

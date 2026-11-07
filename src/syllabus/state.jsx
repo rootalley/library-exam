@@ -48,6 +48,12 @@ export function reducer(s, a) {
     case 'setListEntry':
       // only if the line still holds the text that was looked up
       return updateBlock(s, a.id, (b) => ({ ...b, items: b.items.map((x, i) => (i === a.index && x.input === a.input ? { ...x, entry: a.entry, status: a.status } : x)) }))
+    case 'acceptListItem':
+      return updateBlock(s, a.id, (b) => {
+        const items = b.items.map((x, i) => (i === a.index && x.input === a.input ? { ...x, status: 'accepted' } : x))
+        // adding the last item opens a new empty line, ready to type in
+        return { ...b, items: a.index === b.items.length - 1 ? [...items, item('', true)] : items }
+      })
     case 'editListItem':
       return updateBlock(s, a.id, (b) => ({ ...b, items: b.items.map((x, i) => (i === a.index ? item(a.value) : x)) }))
     case 'addListItem':
