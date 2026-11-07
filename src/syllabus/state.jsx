@@ -45,6 +45,9 @@ export function reducer(s, a) {
       const title = course.statements.find((x) => x.id === a.id).title
       return { ...st, log: [...s.log, `Inserted the ${title} statement (locked)`] }
     }
+    case 'setListEntry':
+      // only if the line still holds the text that was looked up
+      return updateBlock(s, a.id, (b) => ({ ...b, items: b.items.map((x, i) => (i === a.index && x.input === a.input ? { ...x, entry: a.entry, status: a.status } : x)) }))
     case 'editListItem':
       return updateBlock(s, a.id, (b) => ({ ...b, items: b.items.map((x, i) => (i === a.index ? item(a.value) : x)) }))
     case 'addListItem':
