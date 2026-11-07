@@ -1,7 +1,7 @@
 // the finished syllabus page: what students see, and what the instructor previews
 import { View, Heading, Text } from '@instructure/ui'
 import { course } from '../data.js'
-import { JumpLinks } from '../shared.jsx'
+import { JumpLinks, Summary } from '../shared.jsx'
 import { slug } from './state.jsx'
 import { ContactCard, contactEmpty } from './Contact.jsx'
 import { CourseSummaryTable } from './CourseSummary.jsx'
@@ -20,10 +20,14 @@ export const hasContent = (b) => {
 
 export function SyllabusPage({ blocks: allBlocks }) {
   const blocks = allBlocks.filter(hasContent)
+  const grading = blocks.filter((b) => b.kind === 'grading').flatMap((b) => b.rows).filter((r) => r.category || r.weight)
+  // the exam dates in the box come from the course summary, they are the quizzes
+  const exams = blocks.filter((b) => b.kind === 'coursesummary').flatMap((b) => b.rows).filter((r) => r.type === 'quiz')
 
   return (
     <div>
       <JumpLinks items={blocks.map((b) => b.title)} />
+      <Summary grading={grading} exams={exams} />
       {blocks.map((b) => (
         <View as="section" display="block" margin="0 0 large" key={b.id}>
           <Heading level="h2" id={slug(b.title)} margin="0 0 x-small">{b.title}</Heading>
