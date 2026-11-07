@@ -19,9 +19,7 @@ I'll build it a little at a time and commit after every piece. Started with plai
 
 ## editor
 - [x] list of blocks with edit, done, cancel, move up/down, remove, add a block
-- [ ] block types: text, instructor info, learning objectives, grading scheme, course summary, materials and readings, policies
-  - [x] done so far: text, instructor info, learning objectives, grading scheme, course summary, policies
-  - [x] materials and readings too
+- [x] block types: text, instructor info, learning objectives, grading scheme, course summary, materials and readings, policies
 - [x] review panel: move all dates, details to check, required statements
 - [x] fake file chooser, spinner, course chooser
 
@@ -30,12 +28,17 @@ I'll build it a little at a time and commit after every piece. Started with plai
 - [x] view as student button in the course header
 - [x] jump links and the at a glance box
 - [x] isbn / doi lookup for materials and readings
-- [ ] immersive reader (read aloud, text size, color themes)
+- [x] immersive reader (read aloud, text size, color themes, line focus)
 
 ## last
-- [ ] du theme and the plain canvas theme
-- [ ] restart link in the banner
-- [ ] readme
+- [x] du theme and the plain canvas theme
+- [x] restart link in the banner
+- [x] readme
 
 ## notes
 - the InstUI Modal wants shouldCloseOnDocumentClick={false} or the dialogs close when you click outside them
+
+## ideas for later
+- real export to word and pdf
+- drag and drop to reorder blocks instead of the arrow buttons
+- show the syllabus in the real canvas page frame with the other course tools
