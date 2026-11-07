@@ -26,8 +26,29 @@ function paragraphs(blocks) {
   return out
 }
 
+// cuts a paragraph into sentences, each one keeps the space after it
+// it splits after . ! or ? followed by a space, so an email like casey.rivera@example.edu stays whole
+// the abbreviation list keeps "Prof. Casey" from splitting after Prof.
+const ABBR = /\b(Prof|Dr|Mr|Ms|Mrs|St|vs)$/i
+function sentencesOf(text) {
+  const out = []
+  let last = 0
+  const re = /[.!?]+\s+/g
+  let m
+  while ((m = re.exec(text))) {
+    if (ABBR.test(text.slice(last, m.index))) continue
+    out.push(text.slice(last, m.index + m[0].length))
+    last = m.index + m[0].length
+  }
+  if (last < text.length) out.push(text.slice(last))
+  return out
+}
+
 function Reader({ blocks, onClose }) {
   const paras = paragraphs(blocks)
+  // every sentence gets a number across the whole page, the read aloud highlight will use it
+  let n = 0
+  const flat = paras.map((p) => ({ ...p, sentences: sentencesOf(p.text).map((t) => ({ t, i: n++ })) }))
 
   return (
     <Modal open size="fullscreen" label="Immersive Reader" onDismiss={onClose} shouldCloseOnDocumentClick={false}>
@@ -40,9 +61,13 @@ function Reader({ blocks, onClose }) {
       <Modal.Body padding="none">
         <div style={{ height: 'calc(100vh - 150px)', overflowY: 'auto', background: '#ffffff', color: '#1b1b1b' }}>
           <div style={{ position: 'relative', maxWidth: '46rem', margin: '0 auto', padding: '32px 24px 64px', fontSize: 24, lineHeight: 1.5 }}>
-            {paras.map((p, pi) => {
+            {flat.map((p, pi) => {
               const style = p.type === 'h' ? { fontSize: '1.35em', fontWeight: 700, margin: '1.4em 0 0.3em' } : p.type === 'h3' ? { fontWeight: 700, margin: '0.8em 0 0.2em' } : { margin: '0 0 0.7em' }
-              return <div key={pi} style={style}>{p.text}</div>
+              return (
+                <div key={pi} style={style}>
+                  {p.sentences.map((s) => <span key={s.i} id={`ir-s-${s.i}`}>{s.t}</span>)}
+                </div>
+              )
             })}
             <View as="div" margin="large 0 0"><Text size="small" color="secondary">Prototype: this emulation reads aloud with a moving highlight and offers text size, spacing, themes, and line focus. The real Immersive Reader also has grammar tools, a picture dictionary, and translation.</Text></View>
           </div>
