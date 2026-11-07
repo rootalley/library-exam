@@ -6,6 +6,13 @@ import { course } from '../data.js'
 import { CONTACT_ROWS, filled } from './Contact.jsx'
 import { describe } from './lookup.js'
 
+// reading color themes
+const THEMES = {
+  light: { name: 'White', bg: '#ffffff', fg: '#1b1b1b' },
+  cream: { name: 'Cream', bg: '#f6ecd6', fg: '#2b2b2b' },
+  dark: { name: 'Dark', bg: '#1e1e1e', fg: '#f2f2f2' },
+}
+
 // the page as a flat list of headings and paragraphs in page order, that's what the reader shows
 function paragraphs(blocks) {
   const out = []
@@ -55,6 +62,13 @@ function Reader({ blocks, onClose }) {
     return paras.map((p) => ({ ...p, sentences: sentencesOf(p.text).map((t) => ({ t, i: n++ })) }))
   }, [paras])
   const sentenceList = useMemo(() => flat.flatMap((p) => p.sentences.map((s) => s.t)), [flat])
+
+  const [size, setSize] = useState(24)
+  const [wide, setWide] = useState(false)
+  const [theme, setTheme] = useState('light')
+  const t = THEMES[theme]
+  // a toggle button looks pressed while its setting is on
+  const btn = (on) => ({ color: on ? 'primary' : 'secondary', 'aria-pressed': on })
 
   const [reading, setReading] = useState(false)
   // idx is the sentence being read, -1 when nothing is
@@ -111,11 +125,18 @@ function Reader({ blocks, onClose }) {
           <Flex.Item><IconButton screenReaderLabel="Exit Immersive Reader" renderIcon={IconArrowOpenStartLine} onClick={onClose} /></Flex.Item>
           <Flex.Item margin="0 medium 0 0"><Text weight="bold" size="large">Immersive Reader</Text></Flex.Item>
           <Flex.Item><Button renderIcon={reading ? IconPauseLine : IconPlayLine} color="primary" onClick={toggleRead}>{reading ? 'Pause' : 'Read aloud'}</Button></Flex.Item>
+          <Flex.Item margin="0 0 0 medium"><Text size="small">Text size</Text></Flex.Item>
+          <Flex.Item><Button size="small" onClick={() => setSize((n) => Math.max(16, n - 2))} aria-label="Smaller text">A&minus;</Button></Flex.Item>
+          <Flex.Item><Button size="small" onClick={() => setSize((n) => Math.min(44, n + 2))} aria-label="Larger text">A+</Button></Flex.Item>
+          <Flex.Item><Button size="small" {...btn(wide)} onClick={() => setWide(!wide)}>Wider spacing</Button></Flex.Item>
+          {Object.entries(THEMES).map(([k, th]) => (
+            <Flex.Item key={k}><Button size="small" {...btn(theme === k)} onClick={() => setTheme(k)}>{th.name}</Button></Flex.Item>
+          ))}
         </Flex>
       </Modal.Header>
       <Modal.Body padding="none">
-        <div style={{ height: 'calc(100vh - 150px)', overflowY: 'auto', background: '#ffffff', color: '#1b1b1b' }}>
-          <div style={{ position: 'relative', maxWidth: '46rem', margin: '0 auto', padding: '32px 24px 64px', fontSize: 24, lineHeight: 1.5 }}>
+        <div style={{ height: 'calc(100vh - 150px)', overflowY: 'auto', background: t.bg, color: t.fg }}>
+          <div style={{ position: 'relative', maxWidth: '46rem', margin: '0 auto', padding: '32px 24px 64px', fontSize: size, lineHeight: wide ? 1.9 : 1.5, letterSpacing: wide ? '0.08em' : 'normal', wordSpacing: wide ? '0.25em' : 'normal' }}>
             {flat.map((p, pi) => {
               const style = p.type === 'h' ? { fontSize: '1.35em', fontWeight: 700, margin: '1.4em 0 0.3em' } : p.type === 'h3' ? { fontWeight: 700, margin: '0.8em 0 0.2em' } : { margin: '0 0 0.7em' }
               return (
